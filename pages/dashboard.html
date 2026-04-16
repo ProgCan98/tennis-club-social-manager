@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | Tennis Club Social Manager</title>
+  <link rel="stylesheet" href="../styles/style.css" />
+</head>
+
+<body>
+
+  <!-- ========================================
+       SIDEBAR: Navegación lateral principal
+  ======================================== -->
+  <aside class="sidebar" role="navigation" aria-label="Menú principal">
+    <div class="sidebar__brand">
+      <img src="../assets/icons/logo.svg" alt="Logo del club" class="sidebar__logo" />
+      <h1 class="sidebar__title">Tennis Club</h1>
+      <p class="sidebar__subtitle">Social Manager</p>
+    </div>
+
+    <nav class="sidebar__nav">
+      <ul class="nav__list">
+        <li class="nav__item nav__item--active">
+          <a href="dashboard.html" class="nav__link">
+            <span class="nav__icon" aria-hidden="true">📊</span>
+            Dashboard
+          </a>
+        </li>
+        <li class="nav__item">
+          <a href="posts.html" class="nav__link">
+            <span class="nav__icon" aria-hidden="true">📝</span>
+            Publicaciones
+          </a>
+        </li>
+        <li class="nav__item">
+          <a href="ideas.html" class="nav__link">
+            <span class="nav__icon" aria-hidden="true">💡</span>
+            Ideas
+          </a>
+        </li>
+        <li class="nav__item">
+          <a href="calendar.html" class="nav__link">
+            <span class="nav__icon" aria-hidden="true">📅</span>
+            Calendario
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- ========================================
+       CONTENIDO PRINCIPAL
+  ======================================== -->
+  <div class="layout">
+
+    <!-- HEADER: Barra superior con saludo y acciones rápidas -->
+    <header class="topbar">
+      <div class="topbar__greeting">
+        <h2 class="topbar__title">Bienvenido 👋</h2>
+        <p class="topbar__date" id="current-date"><!-- Fecha dinámica vía JS --></p>
+      </div>
+      <div class="topbar__actions">
+        <button class="btn btn--primary" onclick="window.location.href='posts.html'">
+          + Nueva publicación
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN: Contenido del dashboard -->
+    <main class="main-content">
+
+      <!-- SECCIÓN: Tarjetas de resumen (KPIs rápidos) -->
+      <section class="section" aria-labelledby="summary-heading">
+        <h2 id="summary-heading" class="section__title">Resumen</h2>
+        <div class="cards-grid">
+
+          <article class="card card--stat">
+            <h3 class="card__label">Publicaciones este mes</h3>
+            <p class="card__value" id="stat-posts-month">0</p>
+          </article>
+
+          <article class="card card--stat">
+            <h3 class="card__label">Pendientes de publicar</h3>
+            <p class="card__value" id="stat-posts-pending">0</p>
+          </article>
+
+          <article class="card card--stat">
+            <h3 class="card__label">Ideas guardadas</h3>
+            <p class="card__value" id="stat-ideas">0</p>
+          </article>
+
+          <article class="card card--stat">
+            <h3 class="card__label">Próximos eventos</h3>
+            <p class="card__value" id="stat-events">0</p>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- SECCIÓN: Próximas publicaciones programadas -->
+      <section class="section" aria-labelledby="upcoming-heading">
+        <h2 id="upcoming-heading" class="section__title">Próximas publicaciones</h2>
+        <div class="section__header">
+          <a href="posts.html" class="link--muted">Ver todas →</a>
+        </div>
+
+        <!-- Lista de publicaciones próximas (se llena vía JS) -->
+        <ul class="posts-list" id="upcoming-posts-list">
+          <!-- Placeholder cuando no hay datos -->
+          <li class="posts-list__empty">No hay publicaciones programadas.</li>
+        </ul>
+      </section>
+
+      <!-- SECCIÓN: Ideas recientes -->
+      <section class="section" aria-labelledby="ideas-heading">
+        <h2 id="ideas-heading" class="section__title">Ideas recientes</h2>
+        <div class="section__header">
+          <a href="ideas.html" class="link--muted">Ver todas →</a>
+        </div>
+
+        <ul class="ideas-list" id="recent-ideas-list">
+          <li class="ideas-list__empty">No hay ideas guardadas aún.</li>
+        </ul>
+      </section>
+
+      <!-- SECCIÓN: Próximas fechas del calendario -->
+      <section class="section" aria-labelledby="events-heading">
+        <h2 id="events-heading" class="section__title">Próximas fechas importantes</h2>
+        <div class="section__header">
+          <a href="calendar.html" class="link--muted">Ver calendario →</a>
+        </div>
+
+        <ul class="events-list" id="upcoming-events-list">
+          <li class="events-list__empty">No hay eventos próximos.</li>
+        </ul>
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p class="footer__text">Tennis Club Social Manager &copy; 2026</p>
+    </footer>
+
+  </div><!-- /.layout -->
+
+  <script src="../scripts/app.js"></script>
+</body>
+</html>
