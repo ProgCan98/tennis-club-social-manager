@@ -33,7 +33,101 @@ function generateId(prefix) {
 }
 
 // =============================================
-// 2. DATA — Lógica de negocio
+// 2. SEED — Carga mock data si localStorage está vacío
+// =============================================
+
+const MOCK_DATA = {
+  posts: [
+    {
+      id: 'post_001',
+      title: 'Apertura Torneo de Verano',
+      body: 'Este sábado arranca el torneo más esperado del año 🏆',
+      status: 'scheduled',
+      platforms: ['instagram', 'facebook'],
+      scheduledDate: '2026-05-10',
+      publishedDate: null,
+      eventId: 'evt_001',
+      mediaIds: [],
+      tags: ['torneo', 'verano'],
+      createdAt: '2026-04-15T10:00:00Z',
+      updatedAt: '2026-04-16T14:30:00Z',
+    },
+    {
+      id: 'post_002',
+      title: 'Tips: cómo mejorar tu revés',
+      body: '3 ejercicios que podés hacer en casa para un revés más sólido 💪',
+      status: 'draft',
+      platforms: ['instagram'],
+      scheduledDate: null,
+      publishedDate: null,
+      eventId: null,
+      mediaIds: [],
+      tags: ['tips', 'técnica'],
+      createdAt: '2026-04-16T09:00:00Z',
+      updatedAt: '2026-04-16T09:00:00Z',
+    },
+  ],
+  ideas: [
+    {
+      id: 'idea_001',
+      title: 'Recorrido virtual por las canchas',
+      description: 'Video corto mostrando las instalaciones renovadas',
+      priority: 'alta',
+      status: 'aprobada',
+      convertedPostId: null,
+      tags: ['instalaciones', 'video'],
+      createdAt: '2026-04-10T08:00:00Z',
+    },
+    {
+      id: 'idea_002',
+      title: 'Entrevista a jugador destacado del mes',
+      description: 'Preguntas cortas + foto en cancha',
+      priority: 'media',
+      status: 'nueva',
+      convertedPostId: null,
+      tags: ['comunidad', 'entrevista'],
+      createdAt: '2026-04-12T11:30:00Z',
+    },
+  ],
+  events: [
+    {
+      id: 'evt_001',
+      title: 'Torneo de Verano 2026',
+      date: '2026-05-10',
+      endDate: '2026-05-12',
+      type: 'torneo',
+      description: 'Categorías Sub-14, Sub-18 y Libre',
+      createdAt: '2026-04-01T10:00:00Z',
+    },
+    {
+      id: 'evt_002',
+      title: 'Clínica de Dobles',
+      date: '2026-05-20',
+      endDate: null,
+      type: 'clase',
+      description: 'Clase abierta para socios, foco en estrategia de dobles',
+      createdAt: '2026-04-05T15:00:00Z',
+    },
+  ],
+  media: [],
+  tasks: [],
+};
+
+function seedIfEmpty() {
+  const isEmpty = [KEYS.posts, KEYS.ideas, KEYS.events].every(
+    key => localStorage.getItem(key) === null
+  );
+  if (!isEmpty) return;
+
+  Storage.save(KEYS.posts,  MOCK_DATA.posts);
+  Storage.save(KEYS.ideas,  MOCK_DATA.ideas);
+  Storage.save(KEYS.events, MOCK_DATA.events);
+  Storage.save(KEYS.media,  MOCK_DATA.media);
+  Storage.save(KEYS.tasks,  MOCK_DATA.tasks);
+}
+
+// =============================================
+// 3. DATA — Lógica de negocio
 // =============================================
 
 const Posts = {
@@ -166,6 +260,8 @@ function renderDashboard() {
 // =============================================
 
 document.addEventListener('DOMContentLoaded', () => {
+  seedIfEmpty(); // siempre primero, en todas las páginas
+
   const page = document.body.dataset.page;
   if (page === 'dashboard') renderDashboard();
 });

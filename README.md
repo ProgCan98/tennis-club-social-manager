@@ -20,7 +20,7 @@ Proyecto en desarrollo — MVP en construcción iterativa.
 
 ```
 tennis-club-social-manager/
-├── index.html                  ← Redirige a dashboard
+├── index.html                  ⬜ Vacío (pendiente: redirect a dashboard)
 ├── README.md
 ├── assets/
 │   ├── icons/
@@ -31,7 +31,7 @@ tennis-club-social-manager/
 │   ├── ideas.html              ⬜ Pendiente
 │   └── calendar.html           ⬜ Pendiente
 ├── scripts/
-│   └── app.js                  ✅ Capa Storage + lógica Dashboard
+│   └── app.js                  ✅ Storage + Seed + lógica Dashboard
 └── styles/
     └── style.css               ✅ Construido
 ```
@@ -386,7 +386,7 @@ El MVP permite a una persona del club: **crear ideas, convertirlas en posts, pro
 
 | ID    | Funcionalidad                        | Prioridad | Notas                            |
 | ----- | ------------------------------------ | --------- | -------------------------------- |
-| F5.1  | Seed de mock data al primer uso      | P0        | Si localStorage vacío → cargar datos de ejemplo |
+| F5.1  | Seed de mock data al primer uso      | P0        | ✅ Implementado — `seedIfEmpty()` en app.js |
 | F5.2  | Sidebar + navegación compartida      | P0        | ✅ Ya existe en dashboard.html, replicar |
 | F5.3  | Componente modal reutilizable (CSS)  | P0        | Para todos los formularios CRUD  |
 | F5.4  | Feedback visual (toast/notificación) | P1        | "Post creado", "Idea eliminada"  |
@@ -410,8 +410,8 @@ Cada tarea es pequeña (30 min – 2 h). Se implementan en orden.
 
 | #  | Tarea                                          | Depende de | Entregable                    |
 | -- | ---------------------------------------------- | ---------- | ----------------------------- |
-| 01 | Agregar keys `media` y `tasks` al objeto KEYS  | —          | `app.js` actualizado          |
-| 02 | Cargar mock data en localStorage si está vacío (seed) | 01   | Función `seedIfEmpty()` en app.js |
+| 01 | ✅ Agregar keys `media` y `tasks` al objeto KEYS  | —          | `app.js` actualizado          |
+| 02 | ✅ Cargar mock data en localStorage si está vacío (seed) | 01   | Función `seedIfEmpty()` en app.js |
 | 03 | Extraer sidebar a un partial JS (inyección dinámica) | —     | Función `renderSidebar()` + sidebar sin duplicar HTML |
 | 04 | Crear CSS del componente modal (`.modal`, `.modal__overlay`, `.modal__body`) | — | `style.css` actualizado |
 | 05 | Crear CSS del componente toast (`.toast`)       | —          | `style.css` actualizado       |
