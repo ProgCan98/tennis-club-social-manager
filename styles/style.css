@@ -278,3 +278,168 @@ body {
   font-size: 0.78rem;
   color: var(--color-text-muted);
 }
+
+/* =============================================
+   MODAL
+============================================= */
+
+/* Contenedor principal: ocupa toda la pantalla, oculto por defecto */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* Cuando está abierto */
+.modal--open {
+  display: flex;
+}
+
+/* Overlay oscuro detrás del card */
+.modal__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+}
+
+/* Card del contenido */
+.modal__body {
+  position: relative;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cabecera del modal */
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.modal__title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+/* Botón de cierre × */
+.modal__close {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.modal__close:hover {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* Área scrollable con el formulario u otro contenido */
+.modal__content {
+  padding: 24px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Pie con botones de acción */
+.modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px 20px;
+  border-top: 1px solid var(--color-border);
+}
+
+/* Variante: botón secundario (cancelar) */
+.btn--secondary {
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.btn--secondary:hover {
+  background: var(--color-border);
+}
+
+/* Variante: botón de peligro (eliminar) */
+.btn--danger {
+  background: #c62828;
+  color: #fff;
+}
+
+.btn--danger:hover {
+  background: #b71c1c;
+}
+
+/* =============================================
+   TOAST — Notificación temporal
+============================================= */
+
+.toast {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-radius: var(--radius);
+  background: var(--color-text);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  min-width: 240px;
+  max-width: 360px;
+
+  /* Oculto por defecto: desplazado hacia abajo */
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* Cuando está visible */
+.toast--visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Variantes de color según tipo de mensaje */
+.toast--success { background: var(--color-primary); }
+.toast--error   { background: #c62828; }
+.toast--warning { background: #e65100; }
+.toast--info    { background: #1565c0; }
+
+/* Ícono opcional a la izquierda */
+.toast__icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+/* Texto del mensaje */
+.toast__message {
+  flex: 1;
+}

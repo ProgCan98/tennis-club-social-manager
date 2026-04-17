@@ -33,7 +33,7 @@ tennis-club-social-manager/
 ├── scripts/
 │   └── app.js                  ✅ Storage + Seed + Sidebar dinámica + Dashboard
 └── styles/
-    └── style.css               ✅ Construido
+    └── style.css               ✅ Base + Modal + Toast
 ```
 
 ---
@@ -388,8 +388,8 @@ El MVP permite a una persona del club: **crear ideas, convertirlas en posts, pro
 | ----- | ------------------------------------ | --------- | -------------------------------- |
 | F5.1  | Seed de mock data al primer uso      | P0        | ✅ Implementado — `seedIfEmpty()` en app.js |
 | F5.2  | Sidebar + navegación compartida      | P0        | ✅ Implementado — `renderSidebar()` dinámico |
-| F5.3  | Componente modal reutilizable (CSS)  | P0        | Para todos los formularios CRUD  |
-| F5.4  | Feedback visual (toast/notificación) | P1        | "Post creado", "Idea eliminada"  |
+| F5.3  | Componente modal reutilizable (CSS)  | P0        | ✅ Implementado — `.modal` + variantes en style.css |
+| F5.4  | Feedback visual (toast/notificación) | P1        | ✅ CSS implementado — `.toast` + variantes |
 | F5.5  | Responsive básico (mobile sidebar)   | P2        | Sidebar colapsable               |
 
 ### Lo que queda FUERA del MVP
@@ -413,8 +413,8 @@ Cada tarea es pequeña (30 min – 2 h). Se implementan en orden.
 | 01 | ✅ Agregar keys `media` y `tasks` al objeto KEYS  | —          | `app.js` actualizado          |
 | 02 | ✅ Cargar mock data en localStorage si está vacío (seed) | 01   | Función `seedIfEmpty()` en app.js |
 | 03 | ✅ Extraer sidebar a un partial JS (inyección dinámica) | —     | Función `renderSidebar()` + sidebar sin duplicar HTML |
-| 04 | Crear CSS del componente modal (`.modal`, `.modal__overlay`, `.modal__body`) | — | `style.css` actualizado |
-| 05 | Crear CSS del componente toast (`.toast`)       | —          | `style.css` actualizado       |
+| 04 | ✅ Crear CSS del componente modal (`.modal`, `.modal__overlay`, `.modal__body`) | — | `style.css` actualizado |
+| 05 | ✅ Crear CSS del componente toast (`.toast`)       | —          | `style.css` actualizado       |
 | 06 | Crear helpers JS: `openModal()`, `closeModal()`, `showToast()` | 04, 05 | `app.js` actualizado    |
 
 ### Sprint 2 — Página Posts
