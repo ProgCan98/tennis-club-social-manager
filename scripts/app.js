@@ -256,11 +256,54 @@ function renderDashboard() {
 }
 
 // =============================================
+// 7. UI — Sidebar
+// =============================================
+
+const NAV_ITEMS = [
+  { page: 'dashboard', href: 'dashboard.html', icon: '📊', label: 'Dashboard'     },
+  { page: 'posts',     href: 'posts.html',     icon: '📝', label: 'Publicaciones' },
+  { page: 'ideas',     href: 'ideas.html',     icon: '💡', label: 'Ideas'         },
+  { page: 'calendar',  href: 'calendar.html',  icon: '📅', label: 'Calendario'    },
+];
+
+function renderSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  if (!sidebar) return;
+
+  const currentPage = document.body.dataset.page;
+
+  sidebar.setAttribute('role', 'navigation');
+  sidebar.setAttribute('aria-label', 'Menú principal');
+  sidebar.classList.add('sidebar');
+
+  sidebar.innerHTML = `
+    <div class="sidebar__brand">
+      <img src="../assets/icons/logo.svg" alt="Logo del club" class="sidebar__logo" />
+      <h1 class="sidebar__title">Tennis Club</h1>
+      <p class="sidebar__subtitle">Social Manager</p>
+    </div>
+    <nav class="sidebar__nav">
+      <ul class="nav__list">
+        ${NAV_ITEMS.map(item => `
+          <li class="nav__item ${currentPage === item.page ? 'nav__item--active' : ''}">
+            <a href="${item.href}" class="nav__link">
+              <span class="nav__icon" aria-hidden="true">${item.icon}</span>
+              ${item.label}
+            </a>
+          </li>
+        `).join('')}
+      </ul>
+    </nav>
+  `;
+}
+
+// =============================================
 // INIT — Punto de entrada según la página
 // =============================================
 
 document.addEventListener('DOMContentLoaded', () => {
-  seedIfEmpty(); // siempre primero, en todas las páginas
+  seedIfEmpty();    // siempre primero, en todas las páginas
+  renderSidebar();  // sidebar compartido en todas las páginas
 
   const page = document.body.dataset.page;
   if (page === 'dashboard') renderDashboard();
