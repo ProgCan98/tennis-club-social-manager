@@ -10,6 +10,8 @@ const KEYS = {
   posts:  'tcm_posts',
   ideas:  'tcm_ideas',
   events: 'tcm_events',
+  media:  'tcm_media',
+  tasks:  'tcm_tasks',
 };
 
 const Storage = {
