@@ -370,6 +370,301 @@ function showToast(message, type = 'success') {
 }
 
 // =============================================
+// 11. PAGE — Posts
+// =============================================
+
+const STATUS_LABELS = {
+  draft:     'Borrador',
+  scheduled: 'Programado',
+  published: 'Publicado',
+};
+
+function renderPostsList(filter = 'all') {
+  const list    = document.getElementById('posts-list');
+  const countEl = document.getElementById('posts-count');
+  if (!list) return;
+
+  const all      = Posts.getAll();
+  const filtered = filter === 'all' ? all : all.filter(p => p.status === filter);
+
+  countEl.textContent = filtered.length;
+
+  if (!filtered.length) {
+    list.innerHTML = '<li class="list-empty">No hay publicaciones para este filtro.</li>';
+    return;
+  }
+
+  list.innerHTML = filtered
+    .sort((a, b) => {
+      if (a.scheduledDate && b.scheduledDate) return a.scheduledDate.localeCompare(b.scheduledDate);
+      if (a.scheduledDate) return -1;
+      if (b.scheduledDate) return 1;
+      return b.createdAt.localeCompare(a.createdAt);
+    })
+    .map(p => `
+      <li class="post-item" data-id="${p.id}">
+        <div class="post-item__main">
+          <span class="post-item__status post-item__status--${p.status}">
+            ${STATUS_LABELS[p.status] ?? p.status}
+          </span>
+          <span class="post-item__title">${p.title}</span>
+        </div>
+        <div class="post-item__meta">
+          <span class="post-item__platforms">${p.platforms.join(' · ')}</span>
+          <span class="post-item__date">${p.scheduledDate ? formatDate(p.scheduledDate) : '—'}</span>
+        </div>
+        <div class="post-item__actions">
+          ${p.status !== 'published' ? `
+            <button class="btn-icon btn-icon--advance" data-action="advance" data-id="${p.id}"
+              title="${p.status === 'draft' ? 'Marcar como programado' : 'Marcar como publicado'}">
+              ${p.status === 'draft' ? '📅' : '✅'}
+            </button>` : ''}
+          <button class="btn-icon" data-action="edit"   data-id="${p.id}" title="Editar">✏️</button>
+          <button class="btn-icon" data-action="delete" data-id="${p.id}" title="Eliminar">🗑️</button>
+        </div>
+      </li>
+    `).join('');
+}
+
+// --- Formulario de Post (crear y editar) ---
+
+function buildPostFormHTML(post = null) {
+  const platforms = ['instagram', 'facebook', 'twitter', 'whatsapp'];
+  return `
+    <div class="form-group">
+      <label class="form-label" for="f-title">Título *</label>
+      <input class="form-input" id="f-title" type="text" maxlength="120"
+        placeholder="Ej: Apertura del torneo de verano"
+        value="${post ? post.title : ''}" required />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="f-body">Texto / Caption</label>
+      <textarea class="form-input form-textarea" id="f-body"
+        rows="4" placeholder="Escribí el texto del post...">${post ? post.body : ''}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Plataformas *</label>
+      <div class="form-checkboxes">
+        ${platforms.map(p => `
+          <label class="form-checkbox">
+            <input type="checkbox" value="${p}"
+              ${post?.platforms?.includes(p) ? 'checked' : ''} />
+            ${p.charAt(0).toUpperCase() + p.slice(1)}
+          </label>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="f-status">Estado</label>
+      <select class="form-input form-select" id="f-status">
+        <option value="draft"     ${(!post || post.status === 'draft')     ? 'selected' : ''}>Borrador</option>
+        <option value="scheduled" ${post?.status === 'scheduled'           ? 'selected' : ''}>Programado</option>
+        <option value="published" ${post?.status === 'published'           ? 'selected' : ''}>Publicado</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="f-date">Fecha programada</label>
+      <input class="form-input" id="f-date" type="date"
+        value="${post?.scheduledDate ?? ''}" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="f-tags">Etiquetas (separadas por coma)</label>
+      <input class="form-input" id="f-tags" type="text"
+        placeholder="Ej: torneo, verano, juveniles"
+        value="${post ? post.tags.join(', ') : ''}" />
+    </div>
+  `;
+}
+
+function getPostFormValues() {
+  const platforms = [...document.querySelectorAll('.form-checkboxes input:checked')]
+    .map(cb => cb.value);
+  return {
+    title:         document.getElementById('f-title').value.trim(),
+    body:          document.getElementById('f-body').value.trim(),
+    platforms,
+    status:        document.getElementById('f-status').value,
+    scheduledDate: document.getElementById('f-date').value || null,
+    tags:          document.getElementById('f-tags').value
+                     .split(',').map(t => t.trim()).filter(Boolean),
+  };
+}
+
+function validatePostForm(values) {
+  if (!values.title)            return 'El título es obligatorio.';
+  if (!values.platforms.length) return 'Seleccioná al menos una plataforma.';
+  return null;
+}
+
+function openPostForm(post = null) {
+  const isEdit = post !== null;
+  openModal({
+    title:       isEdit ? 'Editar publicación' : 'Nueva publicación',
+    contentHTML: buildPostFormHTML(post),
+    footerHTML: `
+      <button class="btn btn--secondary" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn--primary"   onclick="${isEdit ? `saveEditPost('${post.id}')` : 'saveNewPost()'}">
+        ${isEdit ? 'Guardar cambios' : 'Crear publicación'}
+      </button>
+    `,
+  });
+}
+
+function saveNewPost() {
+  const values = getPostFormValues();
+  const error  = validatePostForm(values);
+  if (error) { showToast(error, 'warning'); return; }
+
+  const now  = new Date().toISOString();
+  const post = {
+    id:            generateId('post'),
+    ...values,
+    publishedDate: values.status === 'published' ? now.split('T')[0] : null,
+    eventId:       null,
+    mediaIds:      [],
+    createdAt:     now,
+    updatedAt:     now,
+  };
+
+  const posts = Posts.getAll();
+  posts.push(post);
+  Posts.save(posts);
+
+  closeModal();
+  renderPostsList(getActiveFilter());
+  showToast('Publicación creada', 'success');
+}
+
+function saveEditPost(id) {
+  const values = getPostFormValues();
+  const error  = validatePostForm(values);
+  if (error) { showToast(error, 'warning'); return; }
+
+  const posts = Posts.getAll();
+  const index = posts.findIndex(p => p.id === id);
+  if (index === -1) { showToast('No se encontró la publicación', 'error'); return; }
+
+  posts[index] = {
+    ...posts[index],
+    ...values,
+    publishedDate: values.status === 'published'
+      ? (posts[index].publishedDate ?? new Date().toISOString().split('T')[0])
+      : null,
+    updatedAt: new Date().toISOString(),
+  };
+
+  Posts.save(posts);
+  closeModal();
+  renderPostsList(getActiveFilter());
+  showToast('Publicación actualizada', 'success');
+}
+
+function getActiveFilter() {
+  return document.querySelector('#posts-tabs .tab--active')?.dataset.filter ?? 'all';
+}
+
+const STATUS_NEXT = { draft: 'scheduled', scheduled: 'published' };
+const STATUS_ADVANCE_LABELS = { draft: 'programado', scheduled: 'publicado' };
+
+function advancePostStatus(id) {
+  const posts = Posts.getAll();
+  const index = posts.findIndex(p => p.id === id);
+  if (index === -1) return;
+
+  const current = posts[index].status;
+  const next    = STATUS_NEXT[current];
+  if (!next) return;
+
+  posts[index] = {
+    ...posts[index],
+    status:        next,
+    publishedDate: next === 'published' ? new Date().toISOString().split('T')[0] : posts[index].publishedDate,
+    updatedAt:     new Date().toISOString(),
+  };
+
+  Posts.save(posts);
+  renderPostsList(getActiveFilter());
+  showToast(`Publicación marcada como ${STATUS_ADVANCE_LABELS[current]}`, 'success');
+}
+
+function confirmDeletePost(id) {
+  const post = Posts.getAll().find(p => p.id === id);
+  if (!post) return;
+
+  openModal({
+    title: 'Eliminar publicación',
+    contentHTML: `
+      <p>¿Estás seguro que querés eliminar <strong>${post.title}</strong>?</p>
+      <p class="form-hint">Esta acción no se puede deshacer.</p>
+    `,
+    footerHTML: `
+      <button class="btn btn--secondary" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn--danger"    onclick="deletePost('${id}')">Eliminar</button>
+    `,
+  });
+}
+
+function deletePost(id) {
+  const posts    = Posts.getAll();
+  const filtered = posts.filter(p => p.id !== id);
+
+  if (filtered.length === posts.length) {
+    showToast('No se encontró la publicación', 'error');
+    return;
+  }
+
+  Posts.save(filtered);
+  closeModal();
+  renderPostsList(getActiveFilter());
+  showToast('Publicación eliminada', 'info');
+}
+
+function renderPostsPage() {
+  const dateEl = document.getElementById('current-date');
+  if (dateEl) {
+    dateEl.textContent = new Date().toLocaleDateString('es-AR', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+  }
+
+  renderPostsList('all');
+
+  // Botón nueva publicación
+  document.getElementById('btn-new-post')?.addEventListener('click', () => openPostForm());
+
+  // Tabs
+  document.getElementById('posts-tabs')?.addEventListener('click', (e) => {
+    const tab = e.target.closest('[data-filter]');
+    if (!tab) return;
+    document.querySelectorAll('#posts-tabs .tab').forEach(t => t.classList.remove('tab--active'));
+    tab.classList.add('tab--active');
+    renderPostsList(tab.dataset.filter);
+  });
+
+  // Acciones inline (editar) — delegación de eventos
+  document.getElementById('posts-list')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    const { action, id } = btn.dataset;
+    if (action === 'advance') {
+      advancePostStatus(id);
+    }
+    if (action === 'edit') {
+      const post = Posts.getAll().find(p => p.id === id);
+      if (post) openPostForm(post);
+    }
+    if (action === 'delete') {
+      confirmDeletePost(id);
+    }
+  });
+}
+
+// =============================================
 // INIT — Punto de entrada según la página
 // =============================================
 
@@ -380,4 +675,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const page = document.body.dataset.page;
   if (page === 'dashboard') renderDashboard();
+  if (page === 'posts')     renderPostsPage();
 });

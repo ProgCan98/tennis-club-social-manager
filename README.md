@@ -64,13 +64,13 @@ tennis-club-social-manager/
 ├── index.html                  Redirect automático al dashboard
 ├── pages/
 │   ├── dashboard.html          Dashboard con KPIs y resúmenes
-│   ├── posts.html              Gestión de publicaciones (en desarrollo)
-│   ├── ideas.html              Banco de ideas (en desarrollo)
-│   └── calendar.html           Calendario de eventos (en desarrollo)
+│   ├── posts.html              CRUD completo de publicaciones (lista, filtros, modal, acciones)
+│   ├── ideas.html              Banco de ideas (pendiente)
+│   └── calendar.html           Calendario de eventos (pendiente)
 ├── scripts/
-│   └── app.js                  Storage, seed, sidebar, modal/toast helpers, lógica de negocio
+│   └── app.js                  Storage, seed, sidebar, modal/toast helpers, Posts CRUD + validación
 ├── styles/
-│   └── style.css               Reset, layout, componentes (modal, toast)
+│   └── style.css               Reset, layout, componentes (modal, toast, tabs, post-item, forms)
 └── assets/
     └── icons/
 ```
@@ -261,13 +261,13 @@ Las FK viven en el lado N (hijo). `Post.mediaIds` es un array porque Media es re
 
 | #  | Tarea                                                    | Estado |
 | -- | -------------------------------------------------------- | ------ |
-| 07 | Crear HTML de `posts.html`                               | ⬜     |
-| 08 | Renderizar lista de posts desde localStorage             | ⬜     |
-| 09 | Formulario modal: crear post nuevo                       | ⬜     |
-| 10 | Formulario modal: editar post existente                  | ⬜     |
-| 11 | Eliminar post con confirm dialog                         | ⬜     |
-| 12 | Botones inline para cambiar status del post              | ⬜     |
-| 13 | Filtro por status (tabs)                                 | ⬜     |
+| 07 | Crear HTML de `posts.html`                               | ✅     |
+| 08 | Renderizar lista de posts desde localStorage             | ✅     |
+| 09 | Formulario modal: crear post nuevo                       | ✅     |
+| 10 | Formulario modal: editar post existente                  | ✅     |
+| 11 | Eliminar post con confirm dialog                         | ✅     |
+| 12 | Botones inline para cambiar status del post              | ✅     |
+| 13 | Filtro por status (tabs)                                 | ✅     |
 
 ### Sprint 3 — Página Ideas
 
@@ -300,7 +300,7 @@ Las FK viven en el lado N (hijo). `Post.mediaIds` es un array porque Media es re
 | 28 | Mostrar posts programados en el calendario               | ⬜     |
 | 29 | Dashboard: links funcionales "Ver todas →"               | ⬜     |
 | 30 | Fix bug: `p.platform` → `p.platforms`                    | ⬜     |
-| 31 | Validación de formularios                                | ⬜     |
+| 31 | Validación de formularios                                | ✅     |
 | 32 | Test manual del flujo completo                           | ⬜     |
 
 </details>
