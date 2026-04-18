@@ -298,12 +298,85 @@ function renderSidebar() {
 }
 
 // =============================================
+// 8. UI — Modal & Toast
+// =============================================
+
+// --- Modal ---
+
+let _toastTimer = null;
+
+function openModal({ title, contentHTML, footerHTML = '' }) {
+  const modal   = document.getElementById('modal');
+  const titleEl = document.getElementById('modal-title');
+  const content = document.getElementById('modal-content');
+  const footer  = document.getElementById('modal-footer');
+
+  if (!modal) return;
+
+  titleEl.textContent = title;
+  content.innerHTML   = contentHTML;
+  footer.innerHTML    = footerHTML;
+
+  modal.classList.add('modal--open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  const modal = document.getElementById('modal');
+  if (!modal) return;
+
+  modal.classList.remove('modal--open');
+  document.body.style.overflow = '';
+}
+
+function bindModalClose() {
+  document.getElementById('modal-close')?.addEventListener('click', closeModal);
+  document.getElementById('modal-overlay')?.addEventListener('click', closeModal);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+}
+
+// --- Toast ---
+
+function showToast(message, type = 'success') {
+  const toast  = document.getElementById('toast');
+  const iconEl = document.getElementById('toast-icon');
+  const msgEl  = document.getElementById('toast-message');
+
+  if (!toast) return;
+
+  const icons = {
+    success: '✅',
+    error:   '❌',
+    warning: '⚠️',
+    info:    'ℹ️',
+  };
+
+  toast.className = 'toast';
+  toast.classList.add(`toast--${type}`);
+
+  iconEl.textContent = icons[type] ?? '';
+  msgEl.textContent  = message;
+
+  toast.classList.add('toast--visible');
+
+  if (_toastTimer) clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => {
+    toast.classList.remove('toast--visible');
+    _toastTimer = null;
+  }, 3000);
+}
+
+// =============================================
 // INIT — Punto de entrada según la página
 // =============================================
 
 document.addEventListener('DOMContentLoaded', () => {
   seedIfEmpty();    // siempre primero, en todas las páginas
   renderSidebar();  // sidebar compartido en todas las páginas
+  bindModalClose(); // listeners de cierre del modal
 
   const page = document.body.dataset.page;
   if (page === 'dashboard') renderDashboard();
