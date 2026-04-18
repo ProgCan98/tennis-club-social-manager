@@ -68,7 +68,7 @@ tennis-club-social-manager/
 │   ├── ideas.html              Banco de ideas (en desarrollo)
 │   └── calendar.html           Calendario de eventos (en desarrollo)
 ├── scripts/
-│   └── app.js                  Storage, seed, sidebar, lógica de negocio
+│   └── app.js                  Storage, seed, sidebar, modal/toast helpers, lógica de negocio
 ├── styles/
 │   └── style.css               Reset, layout, componentes (modal, toast)
 └── assets/
@@ -255,7 +255,7 @@ Las FK viven en el lado N (hijo). `Post.mediaIds` es un array porque Media es re
 | 03 | Extraer sidebar a un partial JS (inyección dinámica)     | ✅     |
 | 04 | Crear CSS del componente modal                           | ✅     |
 | 05 | Crear CSS del componente toast                           | ✅     |
-| 06 | Crear helpers JS: `openModal()`, `closeModal()`, `showToast()` | ⬜ |
+| 06 | Crear helpers JS: `openModal()`, `closeModal()`, `showToast()` | ✅ |
 
 ### Sprint 2 — Página Posts
 
