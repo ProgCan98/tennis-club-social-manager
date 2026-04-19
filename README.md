@@ -65,12 +65,12 @@ tennis-club-social-manager/
 ├── pages/
 │   ├── dashboard.html          Dashboard con KPIs y resúmenes
 │   ├── posts.html              CRUD completo de publicaciones (lista, filtros, modal, acciones)
-│   ├── ideas.html              Banco de ideas (pendiente)
+│   ├── ideas.html              CRUD completo de ideas (lista, filtros, crear/editar/eliminar, convertir a post)
 │   └── calendar.html           Calendario de eventos (pendiente)
 ├── scripts/
-│   └── app.js                  Storage, seed, sidebar, modal/toast helpers, Posts CRUD + validación
+│   └── app.js                  Storage, seed, sidebar, modal/toast helpers, Posts CRUD, Ideas CRUD + validación
 ├── styles/
-│   └── style.css               Reset, layout, componentes (modal, toast, tabs, post-item, forms)
+│   └── style.css               Reset, layout, componentes (modal, toast, tabs, post-item, idea-item, forms)
 └── assets/
     └── icons/
 ```
@@ -273,12 +273,12 @@ Las FK viven en el lado N (hijo). `Post.mediaIds` es un array porque Media es re
 
 | #  | Tarea                                                    | Estado |
 | -- | -------------------------------------------------------- | ------ |
-| 14 | Crear HTML de `ideas.html`                               | ⬜     |
-| 15 | Renderizar lista de ideas desde localStorage             | ⬜     |
-| 16 | Formulario modal: crear idea nueva                       | ⬜     |
-| 17 | Formulario modal: editar idea existente                  | ⬜     |
-| 18 | Eliminar idea con confirm dialog                         | ⬜     |
-| 19 | Convertir idea en post                                   | ⬜     |
+| 14 | Crear HTML de `ideas.html`                               | ✅     |
+| 15 | Renderizar lista de ideas desde localStorage             | ✅     |
+| 16 | Formulario modal: crear idea nueva                       | ✅     |
+| 17 | Formulario modal: editar idea existente                  | ✅     |
+| 18 | Eliminar idea con confirm dialog                         | ✅     |
+| 19 | Convertir idea en post                                   | ✅     |
 
 ### Sprint 4 — Página Calendario
 

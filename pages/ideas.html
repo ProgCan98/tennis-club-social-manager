@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ideas | Tennis Club Social Manager</title>
+  <link rel="stylesheet" href="../styles/style.css" />
+</head>
+
+<body data-page="ideas">
+
+  <!-- Sidebar generado dinámicamente por renderSidebar() en app.js -->
+  <aside id="sidebar"></aside>
+
+  <div class="layout">
+
+    <header class="topbar">
+      <div class="topbar__greeting">
+        <h2 class="topbar__title">Ideas de contenido</h2>
+        <p class="topbar__date" id="current-date"></p>
+      </div>
+      <div class="topbar__actions">
+        <button class="btn btn--primary" id="btn-new-idea">+ Nueva idea</button>
+      </div>
+    </header>
+
+    <main class="main-content">
+
+      <!-- FILTROS POR STATUS -->
+      <section class="section">
+        <div class="tabs" id="ideas-tabs" role="tablist" aria-label="Filtrar ideas">
+          <button class="tab tab--active" role="tab" data-filter="all">Todas</button>
+          <button class="tab" role="tab" data-filter="nueva">Nuevas</button>
+          <button class="tab" role="tab" data-filter="aprobada">Aprobadas</button>
+          <button class="tab" role="tab" data-filter="convertida">Convertidas</button>
+          <button class="tab" role="tab" data-filter="descartada">Descartadas</button>
+        </div>
+      </section>
+
+      <!-- LISTA DE IDEAS -->
+      <section class="section" aria-labelledby="ideas-heading">
+        <h2 id="ideas-heading" class="section__title">
+          Listado <span id="ideas-count" class="count-badge">0</span>
+        </h2>
+
+        <!-- Lista renderizada por JS (sección 12 en app.js) -->
+        <ul class="ideas-full-list" id="ideas-list">
+          <li class="list-empty">No hay ideas todavía.</li>
+        </ul>
+      </section>
+
+    </main>
+
+    <footer class="footer">
+      <p class="footer__text">Tennis Club Social Manager &copy; 2026</p>
+    </footer>
+
+  </div><!-- /.layout -->
+
+  <!-- MODAL compartido -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal__overlay" id="modal-overlay"></div>
+    <div class="modal__body">
+      <div class="modal__header">
+        <h3 class="modal__title" id="modal-title"></h3>
+        <button class="modal__close" id="modal-close" aria-label="Cerrar">&times;</button>
+      </div>
+      <div class="modal__content" id="modal-content"></div>
+      <div class="modal__footer" id="modal-footer"></div>
+    </div>
+  </div>
+
+  <!-- TOAST compartido -->
+  <div class="toast" id="toast" role="alert" aria-live="polite">
+    <span class="toast__icon" id="toast-icon"></span>
+    <span class="toast__message" id="toast-message"></span>
+  </div>
+
+  <script src="../scripts/app.js"></script>
+</body>
+</html>

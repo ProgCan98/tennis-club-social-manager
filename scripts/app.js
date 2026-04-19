@@ -665,6 +665,291 @@ function renderPostsPage() {
 }
 
 // =============================================
+// 12. PAGE — Ideas
+// =============================================
+
+const IDEA_STATUS_LABELS = {
+  nueva:      'Nueva',
+  aprobada:   'Aprobada',
+  descartada: 'Descartada',
+  convertida: 'Convertida',
+};
+
+const IDEA_PRIORITY_LABELS = {
+  alta:  'Alta',
+  media: 'Media',
+  baja:  'Baja',
+};
+
+function renderIdeasList(filter = 'all') {
+  const list    = document.getElementById('ideas-list');
+  const countEl = document.getElementById('ideas-count');
+  if (!list) return;
+
+  const all      = Ideas.getAll();
+  const filtered = filter === 'all' ? all : all.filter(i => i.status === filter);
+
+  countEl.textContent = filtered.length;
+
+  if (!filtered.length) {
+    list.innerHTML = '<li class="list-empty">No hay ideas para este filtro.</li>';
+    return;
+  }
+
+  list.innerHTML = filtered
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .map(i => `
+      <li class="idea-item" data-id="${i.id}">
+        <div class="idea-item__main">
+          <span class="idea-item__status idea-item__status--${i.status}">
+            ${IDEA_STATUS_LABELS[i.status] ?? i.status}
+          </span>
+          <span class="idea-item__priority idea-item__priority--${i.priority}">
+            ${IDEA_PRIORITY_LABELS[i.priority] ?? i.priority}
+          </span>
+          <span class="idea-item__title">${i.title}</span>
+        </div>
+        <div class="idea-item__actions">
+          ${i.status !== 'convertida' && i.status !== 'descartada' ? `
+            <button class="btn-icon" data-action="convert" data-id="${i.id}" title="Convertir en post">🔁</button>
+          ` : ''}
+          <button class="btn-icon" data-action="edit"   data-id="${i.id}" title="Editar">✏️</button>
+          <button class="btn-icon" data-action="delete" data-id="${i.id}" title="Eliminar">🗑️</button>
+        </div>
+      </li>
+    `).join('');
+}
+
+function buildIdeaFormHTML(idea = null) {
+  return `
+    <div class="form-group">
+      <label class="form-label" for="f-idea-title">Título *</label>
+      <input class="form-input" id="f-idea-title" type="text" maxlength="120"
+        placeholder="Ej: Video del equipo infantil"
+        value="${idea ? idea.title : ''}" required />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="f-idea-desc">Descripción</label>
+      <textarea class="form-input form-textarea" id="f-idea-desc"
+        rows="3" placeholder="Detallá la idea...">${idea ? idea.description : ''}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="f-idea-priority">Prioridad</label>
+      <select class="form-input form-select" id="f-idea-priority">
+        <option value="alta"  ${(!idea || idea.priority === 'alta')  ? 'selected' : ''}>Alta</option>
+        <option value="media" ${idea?.priority === 'media'           ? 'selected' : ''}>Media</option>
+        <option value="baja"  ${idea?.priority === 'baja'            ? 'selected' : ''}>Baja</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="f-idea-status">Estado</label>
+      <select class="form-input form-select" id="f-idea-status">
+        <option value="nueva"      ${(!idea || idea.status === 'nueva')      ? 'selected' : ''}>Nueva</option>
+        <option value="aprobada"   ${idea?.status === 'aprobada'             ? 'selected' : ''}>Aprobada</option>
+        <option value="descartada" ${idea?.status === 'descartada'           ? 'selected' : ''}>Descartada</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="f-idea-tags">Etiquetas (separadas por coma)</label>
+      <input class="form-input" id="f-idea-tags" type="text"
+        placeholder="Ej: video, comunidad"
+        value="${idea ? idea.tags.join(', ') : ''}" />
+    </div>
+  `;
+}
+
+function getIdeaFormValues() {
+  return {
+    title:       document.getElementById('f-idea-title').value.trim(),
+    description: document.getElementById('f-idea-desc').value.trim(),
+    priority:    document.getElementById('f-idea-priority').value,
+    status:      document.getElementById('f-idea-status').value,
+    tags:        document.getElementById('f-idea-tags').value
+                   .split(',').map(t => t.trim()).filter(Boolean),
+  };
+}
+
+function validateIdeaForm(values) {
+  if (!values.title) return 'El título es obligatorio.';
+  return null;
+}
+
+function openIdeaForm(idea = null) {
+  const isEdit = idea !== null;
+  openModal({
+    title:       isEdit ? 'Editar idea' : 'Nueva idea',
+    contentHTML: buildIdeaFormHTML(idea),
+    footerHTML: `
+      <button class="btn btn--secondary" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn--primary"   onclick="${isEdit ? `saveEditIdea('${idea.id}')` : 'saveNewIdea()'}">
+        ${isEdit ? 'Guardar cambios' : 'Crear idea'}
+      </button>
+    `,
+  });
+}
+
+function saveNewIdea() {
+  const values = getIdeaFormValues();
+  const error  = validateIdeaForm(values);
+  if (error) { showToast(error, 'warning'); return; }
+
+  const now  = new Date().toISOString();
+  const idea = {
+    id:              generateId('idea'),
+    ...values,
+    convertedPostId: null,
+    createdAt:       now,
+  };
+
+  const ideas = Ideas.getAll();
+  ideas.push(idea);
+  Ideas.save(ideas);
+
+  closeModal();
+  renderIdeasList(getActiveIdeasFilter());
+  showToast('Idea creada', 'success');
+}
+
+function saveEditIdea(id) {
+  const values = getIdeaFormValues();
+  const error  = validateIdeaForm(values);
+  if (error) { showToast(error, 'warning'); return; }
+
+  const ideas = Ideas.getAll();
+  const index = ideas.findIndex(i => i.id === id);
+  if (index === -1) { showToast('No se encontró la idea', 'error'); return; }
+
+  ideas[index] = { ...ideas[index], ...values };
+  Ideas.save(ideas);
+
+  closeModal();
+  renderIdeasList(getActiveIdeasFilter());
+  showToast('Idea actualizada', 'success');
+}
+
+function confirmDeleteIdea(id) {
+  const idea = Ideas.getAll().find(i => i.id === id);
+  if (!idea) return;
+
+  openModal({
+    title: 'Eliminar idea',
+    contentHTML: `
+      <p>¿Estás seguro que querés eliminar <strong>${idea.title}</strong>?</p>
+      <p class="form-hint">Esta acción no se puede deshacer.</p>
+    `,
+    footerHTML: `
+      <button class="btn btn--secondary" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn--danger"    onclick="deleteIdea('${id}')">Eliminar</button>
+    `,
+  });
+}
+
+function deleteIdea(id) {
+  const ideas    = Ideas.getAll();
+  const filtered = ideas.filter(i => i.id !== id);
+
+  if (filtered.length === ideas.length) {
+    showToast('No se encontró la idea', 'error');
+    return;
+  }
+
+  Ideas.save(filtered);
+  closeModal();
+  renderIdeasList(getActiveIdeasFilter());
+  showToast('Idea eliminada', 'info');
+}
+
+function convertIdeaToPost(id) {
+  const ideas = Ideas.getAll();
+  const index = ideas.findIndex(i => i.id === id);
+  if (index === -1) return;
+
+  const idea = ideas[index];
+  const now  = new Date().toISOString();
+
+  const newPost = {
+    id:            generateId('post'),
+    title:         idea.title,
+    body:          idea.description,
+    status:        'draft',
+    platforms:     [],
+    scheduledDate: null,
+    publishedDate: null,
+    eventId:       null,
+    mediaIds:      [],
+    tags:          idea.tags,
+    createdAt:     now,
+    updatedAt:     now,
+  };
+
+  const posts = Posts.getAll();
+  posts.push(newPost);
+  Posts.save(posts);
+
+  ideas[index] = { ...idea, status: 'convertida', convertedPostId: newPost.id };
+  Ideas.save(ideas);
+
+  closeModal();
+  renderIdeasList(getActiveIdeasFilter());
+  showToast('Idea convertida en borrador de post', 'success');
+}
+
+function confirmConvertIdea(id) {
+  const idea = Ideas.getAll().find(i => i.id === id);
+  if (!idea) return;
+
+  openModal({
+    title: 'Convertir en post',
+    contentHTML: `
+      <p>Se creará un post en borrador con el título y texto de <strong>${idea.title}</strong>.</p>
+      <p class="form-hint">Podés editarlo desde la sección Publicaciones.</p>
+    `,
+    footerHTML: `
+      <button class="btn btn--secondary" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn--primary"   onclick="convertIdeaToPost('${id}')">Convertir</button>
+    `,
+  });
+}
+
+function getActiveIdeasFilter() {
+  return document.querySelector('#ideas-tabs .tab--active')?.dataset.filter ?? 'all';
+}
+
+function renderIdeasPage() {
+  const dateEl = document.getElementById('current-date');
+  if (dateEl) {
+    dateEl.textContent = new Date().toLocaleDateString('es-AR', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+  }
+
+  renderIdeasList('all');
+
+  document.getElementById('btn-new-idea')?.addEventListener('click', () => openIdeaForm());
+
+  document.getElementById('ideas-tabs')?.addEventListener('click', (e) => {
+    const tab = e.target.closest('[data-filter]');
+    if (!tab) return;
+    document.querySelectorAll('#ideas-tabs .tab').forEach(t => t.classList.remove('tab--active'));
+    tab.classList.add('tab--active');
+    renderIdeasList(tab.dataset.filter);
+  });
+
+  document.getElementById('ideas-list')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    const { action, id } = btn.dataset;
+    if (action === 'edit')    { const idea = Ideas.getAll().find(i => i.id === id); if (idea) openIdeaForm(idea); }
+    if (action === 'delete')  { confirmDeleteIdea(id); }
+    if (action === 'convert') { confirmConvertIdea(id); }
+  });
+}
+
+// =============================================
 // INIT — Punto de entrada según la página
 // =============================================
 
@@ -676,4 +961,5 @@ document.addEventListener('DOMContentLoaded', () => {
   const page = document.body.dataset.page;
   if (page === 'dashboard') renderDashboard();
   if (page === 'posts')     renderPostsPage();
+  if (page === 'ideas')     renderIdeasPage();
 });
