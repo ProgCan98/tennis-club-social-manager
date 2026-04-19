@@ -950,6 +950,328 @@ function renderIdeasPage() {
 }
 
 // =============================================
+// =============================================
+// 13. PAGE — Calendar
+// =============================================
+
+const EVENT_TYPE_LABELS = {
+  torneo:  'Torneo',
+  clase:   'Clase',
+  social:  'Social',
+  feriado: 'Feriado',
+  otro:    'Otro',
+};
+
+const EVENT_TYPE_COLORS = {
+  torneo:  '#c62828',
+  clase:   '#1565c0',
+  social:  '#2e7d32',
+  feriado: '#f57f17',
+  otro:    '#6b7280',
+};
+
+// Estado interno del calendario (mes visible)
+let _calendarYear  = new Date().getFullYear();
+let _calendarMonth = new Date().getMonth(); // 0-11
+let _selectedDate  = null;
+
+// --- #21 + #22: Grilla mensual + navegación ---
+
+function renderCalendar() {
+  const title = document.getElementById('calendar-month-title');
+  const grid  = document.getElementById('calendar-grid');
+  if (!grid) return;
+
+  const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                      'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  title.textContent = `${monthNames[_calendarMonth]} ${_calendarYear}`;
+
+  const firstDay    = new Date(_calendarYear, _calendarMonth, 1).getDay(); // 0=Dom
+  const daysInMonth = new Date(_calendarYear, _calendarMonth + 1, 0).getDate();
+  const today       = new Date().toISOString().split('T')[0];
+
+  // --- #23: Indexar eventos y posts por fecha ---
+  const events = Events.getAll();
+  const posts  = Posts.getAll().filter(p => p.scheduledDate);
+
+  const eventsByDate = {};
+  events.forEach(e => {
+    if (!eventsByDate[e.date]) eventsByDate[e.date] = [];
+    eventsByDate[e.date].push({ ...e, _kind: 'event' });
+  });
+  posts.forEach(p => {
+    if (!eventsByDate[p.scheduledDate]) eventsByDate[p.scheduledDate] = [];
+    eventsByDate[p.scheduledDate].push({ ...p, _kind: 'post' });
+  });
+
+  // Celdas vacías antes del día 1
+  const blanks = Array(firstDay).fill('<div class="calendar-cell calendar-cell--empty"></div>');
+
+  // Celdas de días
+  const days = Array.from({ length: daysInMonth }, (_, i) => {
+    const day       = i + 1;
+    const dateStr   = `${_calendarYear}-${String(_calendarMonth + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    const isToday   = dateStr === today;
+    const isSelected = dateStr === _selectedDate;
+    const items     = eventsByDate[dateStr] || [];
+
+    const dots = items.map(item =>
+      `<span class="calendar-dot" style="background:${item._kind === 'event' ? (EVENT_TYPE_COLORS[item.type] ?? '#6b7280') : '#9c27b0'}"
+        title="${item.title}"></span>`
+    ).join('');
+
+    return `
+      <div class="calendar-cell ${isToday ? 'calendar-cell--today' : ''} ${isSelected ? 'calendar-cell--selected' : ''} ${items.length ? 'calendar-cell--has-items' : ''}"
+        data-date="${dateStr}" role="button" tabindex="0">
+        <span class="calendar-cell__day">${day}</span>
+        <div class="calendar-cell__dots">${dots}</div>
+      </div>
+    `;
+  });
+
+  grid.innerHTML = [...blanks, ...days].join('');
+}
+
+// --- #27: Click en día → panel de detalle ---
+
+function renderDayDetail(dateStr) {
+  const section = document.getElementById('day-detail-section');
+  const heading = document.getElementById('day-detail-heading');
+  const list    = document.getElementById('day-detail-list');
+  if (!section) return;
+
+  _selectedDate = dateStr;
+  renderCalendar(); // re-render para marcar celda seleccionada
+
+  const [year, month, day] = dateStr.split('-');
+  const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  heading.textContent = `${parseInt(day)} de ${monthNames[parseInt(month) - 1]} ${year}`;
+
+  const dayEvents = Events.getAll().filter(e => e.date === dateStr);
+  const dayPosts  = Posts.getAll().filter(p => p.scheduledDate === dateStr);
+
+  if (!dayEvents.length && !dayPosts.length) {
+    list.innerHTML = '<li class="list-empty">No hay eventos ni publicaciones este día.</li>';
+  } else {
+    list.innerHTML = [
+      ...dayEvents.map(e => `
+        <li class="day-detail-item day-detail-item--event">
+          <span class="day-detail-item__dot" style="background:${EVENT_TYPE_COLORS[e.type] ?? '#6b7280'}"></span>
+          <div class="day-detail-item__body">
+            <strong>${e.title}</strong>
+            <span>${EVENT_TYPE_LABELS[e.type] ?? e.type}${e.description ? ' — ' + e.description : ''}</span>
+          </div>
+          <div class="day-detail-item__actions">
+            <button class="btn-icon" data-action="edit-event"   data-id="${e.id}" title="Editar">&#9998;</button>
+            <button class="btn-icon" data-action="delete-event" data-id="${e.id}" title="Eliminar">&#128465;</button>
+          </div>
+        </li>`),
+      ...dayPosts.map(p => `
+        <li class="day-detail-item day-detail-item--post">
+          <span class="day-detail-item__dot" style="background:#9c27b0"></span>
+          <div class="day-detail-item__body">
+            <strong>${p.title}</strong>
+            <span>${p.platforms.join(' · ')}</span>
+          </div>
+        </li>`),
+    ].join('');
+  }
+
+  section.hidden = false;
+}
+
+// --- #24 + #25: Formulario crear / editar evento ---
+
+function buildEventFormHTML(event = null) {
+  return `
+    <div class="form-group">
+      <label class="form-label" for="f-evt-title">Título *</label>
+      <input class="form-input" id="f-evt-title" type="text" maxlength="120"
+        placeholder="Ej: Torneo de Dobles"
+        value="${event ? event.title : ''}" required />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="f-evt-date">Fecha *</label>
+      <input class="form-input" id="f-evt-date" type="date"
+        value="${event?.date ?? ''}" required />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="f-evt-end-date">Fecha de fin (opcional)</label>
+      <input class="form-input" id="f-evt-end-date" type="date"
+        value="${event?.endDate ?? ''}" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="f-evt-type">Tipo</label>
+      <select class="form-input form-select" id="f-evt-type">
+        ${Object.entries(EVENT_TYPE_LABELS).map(([val, label]) =>
+          `<option value="${val}" ${event?.type === val ? 'selected' : ''}>${label}</option>`
+        ).join('')}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="f-evt-desc">Descripción</label>
+      <textarea class="form-input form-textarea" id="f-evt-desc"
+        rows="3" placeholder="Detalles del evento...">${event?.description ?? ''}</textarea>
+    </div>
+  `;
+}
+
+function getEventFormValues() {
+  return {
+    title:       document.getElementById('f-evt-title').value.trim(),
+    date:        document.getElementById('f-evt-date').value,
+    endDate:     document.getElementById('f-evt-end-date').value || null,
+    type:        document.getElementById('f-evt-type').value,
+    description: document.getElementById('f-evt-desc').value.trim(),
+  };
+}
+
+function validateEventForm(values) {
+  if (!values.title) return 'El título es obligatorio.';
+  if (!values.date)  return 'La fecha es obligatoria.';
+  return null;
+}
+
+function openEventForm(event = null) {
+  const isEdit = event !== null;
+  openModal({
+    title:       isEdit ? 'Editar evento' : 'Nuevo evento',
+    contentHTML: buildEventFormHTML(event),
+    footerHTML: `
+      <button class="btn btn--secondary" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn--primary"   onclick="${isEdit ? `saveEditEvent('${event.id}')` : 'saveNewEvent()'}">
+        ${isEdit ? 'Guardar cambios' : 'Crear evento'}
+      </button>
+    `,
+  });
+}
+
+function saveNewEvent() {
+  const values = getEventFormValues();
+  const error  = validateEventForm(values);
+  if (error) { showToast(error, 'warning'); return; }
+
+  const event = {
+    id:        generateId('evt'),
+    ...values,
+    createdAt: new Date().toISOString(),
+  };
+
+  const events = Events.getAll();
+  events.push(event);
+  Events.save(events);
+
+  closeModal();
+  renderCalendar();
+  if (_selectedDate === event.date) renderDayDetail(_selectedDate);
+  showToast('Evento creado', 'success');
+}
+
+function saveEditEvent(id) {
+  const values = getEventFormValues();
+  const error  = validateEventForm(values);
+  if (error) { showToast(error, 'warning'); return; }
+
+  const events = Events.getAll();
+  const index  = events.findIndex(e => e.id === id);
+  if (index === -1) { showToast('No se encontró el evento', 'error'); return; }
+
+  events[index] = { ...events[index], ...values };
+  Events.save(events);
+
+  closeModal();
+  renderCalendar();
+  if (_selectedDate) renderDayDetail(_selectedDate);
+  showToast('Evento actualizado', 'success');
+}
+
+// --- #26: Eliminar evento ---
+
+function confirmDeleteEvent(id) {
+  const event = Events.getAll().find(e => e.id === id);
+  if (!event) return;
+
+  openModal({
+    title: 'Eliminar evento',
+    contentHTML: `
+      <p>¿Estás seguro que querés eliminar <strong>${event.title}</strong>?</p>
+      <p class="form-hint">Esta acción no se puede deshacer.</p>
+    `,
+    footerHTML: `
+      <button class="btn btn--secondary" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn--danger"    onclick="deleteEvent('${id}')">Eliminar</button>
+    `,
+  });
+}
+
+function deleteEvent(id) {
+  const events   = Events.getAll();
+  const filtered = events.filter(e => e.id !== id);
+
+  if (filtered.length === events.length) {
+    showToast('No se encontró el evento', 'error');
+    return;
+  }
+
+  Events.save(filtered);
+  closeModal();
+  renderCalendar();
+  if (_selectedDate) renderDayDetail(_selectedDate);
+  showToast('Evento eliminado', 'info');
+}
+
+function renderCalendarPage() {
+  const dateEl = document.getElementById('current-date');
+  if (dateEl) {
+    dateEl.textContent = new Date().toLocaleDateString('es-AR', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+  }
+
+  renderCalendar();
+
+  // Navegación de meses
+  document.getElementById('btn-prev-month')?.addEventListener('click', () => {
+    _calendarMonth--;
+    if (_calendarMonth < 0) { _calendarMonth = 11; _calendarYear--; }
+    _selectedDate = null;
+    document.getElementById('day-detail-section').hidden = true;
+    renderCalendar();
+  });
+
+  document.getElementById('btn-next-month')?.addEventListener('click', () => {
+    _calendarMonth++;
+    if (_calendarMonth > 11) { _calendarMonth = 0; _calendarYear++; }
+    _selectedDate = null;
+    document.getElementById('day-detail-section').hidden = true;
+    renderCalendar();
+  });
+
+  // Click en día
+  document.getElementById('calendar-grid')?.addEventListener('click', (e) => {
+    const cell = e.target.closest('[data-date]');
+    if (!cell) return;
+    renderDayDetail(cell.dataset.date);
+  });
+
+  // Acciones en el panel de detalle (editar/eliminar evento)
+  document.getElementById('day-detail-list')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    const { action, id } = btn.dataset;
+    if (action === 'edit-event')   { const evt = Events.getAll().find(ev => ev.id === id); if (evt) openEventForm(evt); }
+    if (action === 'delete-event') { confirmDeleteEvent(id); }
+  });
+
+  // Botón nuevo evento
+  document.getElementById('btn-new-event')?.addEventListener('click', () => openEventForm());
+}
+
 // INIT — Punto de entrada según la página
 // =============================================
 
@@ -962,4 +1284,5 @@ document.addEventListener('DOMContentLoaded', () => {
   if (page === 'dashboard') renderDashboard();
   if (page === 'posts')     renderPostsPage();
   if (page === 'ideas')     renderIdeasPage();
+  if (page === 'calendar')  renderCalendarPage();
 });

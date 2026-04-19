@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calendario | Tennis Club Social Manager</title>
+  <link rel="stylesheet" href="../styles/style.css" />
+</head>
+
+<body data-page="calendar">
+
+  <aside id="sidebar"></aside>
+
+  <div class="layout">
+
+    <header class="topbar">
+      <div class="topbar__greeting">
+        <h2 class="topbar__title">Calendario</h2>
+        <p class="topbar__date" id="current-date"></p>
+      </div>
+      <div class="topbar__actions">
+        <button class="btn btn--primary" id="btn-new-event">+ Nuevo evento</button>
+      </div>
+    </header>
+
+    <main class="main-content">
+
+      <!-- NAVEGACIÓN DE MES -->
+      <section class="section calendar-section">
+        <div class="calendar-nav">
+          <button class="btn-icon calendar-nav__btn" id="btn-prev-month" title="Mes anterior">&#9664;</button>
+          <h2 class="calendar-nav__title" id="calendar-month-title">—</h2>
+          <button class="btn-icon calendar-nav__btn" id="btn-next-month" title="Mes siguiente">&#9654;</button>
+        </div>
+
+        <!-- Días de la semana -->
+        <div class="calendar-weekdays">
+          <span>Dom</span><span>Lun</span><span>Mar</span>
+          <span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span>
+        </div>
+
+        <!-- Grilla de días — renderizada por JS -->
+        <div class="calendar-grid" id="calendar-grid"></div>
+      </section>
+
+      <!-- DETALLE DEL DÍA SELECCIONADO -->
+      <section class="section" id="day-detail-section" aria-labelledby="day-detail-heading" hidden>
+        <h2 class="section__title" id="day-detail-heading">—</h2>
+        <ul class="day-detail-list" id="day-detail-list"></ul>
+      </section>
+
+    </main>
+
+    <footer class="footer">
+      <p class="footer__text">Tennis Club Social Manager &copy; 2026</p>
+    </footer>
+
+  </div>
+
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal__overlay" id="modal-overlay"></div>
+    <div class="modal__body">
+      <div class="modal__header">
+        <h3 class="modal__title" id="modal-title"></h3>
+        <button class="modal__close" id="modal-close" aria-label="Cerrar">&times;</button>
+      </div>
+      <div class="modal__content" id="modal-content"></div>
+      <div class="modal__footer" id="modal-footer"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="alert" aria-live="polite">
+    <span class="toast__icon" id="toast-icon"></span>
+    <span class="toast__message" id="toast-message"></span>
+  </div>
+
+  <script src="../scripts/app.js"></script>
+</body>
+</html>
