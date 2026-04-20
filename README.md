@@ -47,15 +47,26 @@ Además:
 
 ## Cómo ejecutar
 
-No requiere instalación, build ni servidor. Es HTML/CSS/JS puro.
+### Versión vanilla (HTML/CSS/JS)
+
+No requiere instalación ni build. Abrí directamente en el navegador:
 
 ```bash
-# Opción 1: abrir directamente en el navegador
-start pages/dashboard.html
+# Opción 1: abrir directamente
+start vanilla/index.html
 
-# Opción 2: con un servidor local (evita restricciones de file://)
-npx serve .
+# Opción 2: servidor local (evita restricciones de file://)
+npx serve vanilla
 # Luego abrir http://localhost:3000
+```
+
+### Versión React (en desarrollo)
+
+```bash
+cd react
+npm install
+npm run dev
+# Luego abrir http://localhost:5173
 ```
 
 ---
@@ -64,18 +75,26 @@ npx serve .
 
 ```
 tennis-club-social-manager/
-├── index.html                  Redirect automático al dashboard
-├── pages/
-│   ├── dashboard.html          Dashboard con KPIs y resúmenes
-│   ├── posts.html              CRUD completo de publicaciones
-│   ├── ideas.html              CRUD completo de ideas + conversión a post
-│   └── calendar.html           Calendario mensual + panel de detalle por día
-├── scripts/
-│   └── app.js                  Storage, seed, sidebar, modal/toast, CRUD (Posts, Ideas, Calendar)
-├── styles/
-│   └── style.css               Reset, layout, componentes (modal, toast, tabs, items, calendar, forms)
-└── assets/
-    └── icons/
+├── vanilla/                     Implementación original en HTML/CSS/JS
+│   ├── index.html               Redirect automático al dashboard
+│   ├── pages/
+│   │   ├── dashboard.html       Dashboard con KPIs y resúmenes
+│   │   ├── posts.html           CRUD completo de publicaciones
+│   │   ├── ideas.html           CRUD completo de ideas + conversión a post
+│   │   └── calendar.html        Calendario mensual + panel de detalle por día
+│   ├── scripts/
+│   │   └── app.js               Storage, seed, sidebar, modal/toast, CRUD (Posts, Ideas, Calendar)
+│   ├── styles/
+│   │   └── style.css            Reset, layout, componentes (modal, toast, tabs, items, calendar, forms)
+│   └── assets/
+│       └── icons/
+├── react/                       Nueva implementación con React + Vite
+│   ├── src/                     Componentes, páginas, hooks y estado
+│   ├── public/                  Assets estáticos
+│   ├── package.json             Scripts y dependencias
+│   └── vite.config.js           Configuración de build
+├── README.md                    Documentación general del proyecto
+└── docs/                        Capturas, notas o recursos complementarios
 ```
 
 ---
@@ -166,7 +185,7 @@ tennis-club-social-manager/
 
 | #  | Tarea                                                              | Estado |
 | -- | ------------------------------------------------------------------ | ------ |
-| 33 | Crear proyecto React con Vite (`npm create vite@latest`)           | ⬜     |
+| 33 | Crear proyecto React con Vite (`npm create vite@latest`)           | ✅     |
 | 34 | Migrar CSS existente (`style.css`) al proyecto React               | ⬜     |
 | 35 | Crear componente `Layout` (sidebar + topbar + outlet)              | ⬜     |
 | 36 | Crear componente `Sidebar` (reemplaza `renderSidebar()`)           | ⬜     |
