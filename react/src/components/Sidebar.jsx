@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom'
 
 const NAV_ITEMS = [
-  { page: 'dashboard', path: '/',         label: 'Dashboard'     },
-  { page: 'posts',     path: '/posts',     label: 'Publicaciones' },
-  { page: 'ideas',     path: '/ideas',     label: 'Ideas'         },
-  { page: 'calendar',  path: '/calendar',  label: 'Calendario'    },
+  { page: 'dashboard', path: '/',         icon: '📊', label: 'Dashboard'     },
+  { page: 'posts',     path: '/posts',     icon: '📝', label: 'Publicaciones' },
+  { page: 'ideas',     path: '/ideas',     icon: '💡', label: 'Ideas'         },
+  { page: 'calendar',  path: '/calendar',  icon: '📅', label: 'Calendario'    },
 ]
 
 /**
@@ -27,6 +27,7 @@ function Sidebar({ activePage }) {
               className={`nav__item${activePage === item.page ? ' nav__item--active' : ''}`}
             >
               <Link className="nav__link" to={item.path}>
+                <span className="nav__icon" aria-hidden="true">{item.icon}</span>
                 {item.label}
               </Link>
             </li>

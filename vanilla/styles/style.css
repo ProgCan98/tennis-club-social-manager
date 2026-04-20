@@ -265,6 +265,55 @@ body {
 }
 
 /* =============================================
+   LIST ITEMS — Filas del dashboard
+============================================= */
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.9rem;
+}
+
+.list-item:last-child { border-bottom: none; }
+
+.list-item__date {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  min-width: 82px;
+}
+
+.list-item__title {
+  flex: 1;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-item__platforms,
+.list-item__type {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.list-item__badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.list-item__badge--alta  { background: #ffebee; color: #c62828; }
+.list-item__badge--media { background: #fff8e1; color: #f57f17; }
+.list-item__badge--baja  { background: #f1f8e9; color: #558b2f; }
+
+/* =============================================
    FOOTER
 ============================================= */
 .footer {

@@ -2,7 +2,7 @@
 
 Aplicación web para planificar y organizar la presencia en redes sociales de un club de tenis. Permite gestionar ideas de contenido, programar publicaciones, coordinar eventos del club y visualizar todo desde un dashboard centralizado.
 
-> **Estado del proyecto:** MVP vanilla (HTML/CSS/JS) completado ✅ — Migración a React en curso.
+> **Estado del proyecto:** MVP vanilla (HTML/CSS/JS) completado ✅ — Migración a React completada ✅
 
 ---
 
@@ -89,10 +89,16 @@ tennis-club-social-manager/
 │   └── assets/
 │       └── icons/
 ├── react/                       Nueva implementación con React + Vite
-│   ├── src/                     Componentes, páginas, hooks y estado
-│   ├── public/                  Assets estáticos
-│   ├── package.json             Scripts y dependencias
-│   └── vite.config.js           Configuración de build
+│   ├── src/
+│   │   ├── lib/                 Storage, seed y mock data como módulos JS
+│   │   ├── hooks/               usePosts, useIdeas, useEvents, useToast
+│   │   ├── components/          Layout, Sidebar, Modal, Toast, Tabs, ConfirmDialog
+│   │   ├── pages/               DashboardPage, PostsPage, IdeasPage, CalendarPage
+│   │   ├── App.jsx              Rutas con React Router
+│   │   ├── main.jsx             Punto de entrada, seed inicial
+│   │   └── style.css            CSS migrado desde la versión vanilla
+│   ├── package.json         React 19, React Router, Vite
+│   └── vite.config.js       Configuración de build
 ├── README.md                    Documentación general del proyecto
 └── docs/                        Capturas, notas o recursos complementarios
 ```
@@ -108,7 +114,7 @@ tennis-club-social-manager/
 | 3    | Plan de funcionalidades MVP    | ✅     |
 | 4    | Backlog de tareas              | ✅     |
 | 5    | Implementación iterativa       | ✅     |
-| 6    | Migración a React              | ⬜     |
+| 6    | Migración a React              | ✅     |
 
 **Fuera del alcance del MVP:** Media (upload/galería) · Tasks (gestión de tareas) · Búsqueda global · Export/import · Dark mode
 
@@ -179,44 +185,44 @@ tennis-club-social-manager/
 </details>
 
 <details>
-<summary><strong>Fase 6 — Backlog de migración a React (0/17)</strong></summary>
+<summary><strong>Fase 6 — Backlog de migración a React (17/17 completadas ✅)</strong></summary>
 
 ### Sprint 6 — Setup + layout base
 
 | #  | Tarea                                                              | Estado |
 | -- | ------------------------------------------------------------------ | ------ |
 | 33 | Crear proyecto React con Vite (`npm create vite@latest`)           | ✅     |
-| 34 | Migrar CSS existente (`style.css`) al proyecto React               | ⬜     |
-| 35 | Crear componente `Layout` (sidebar + topbar + outlet)              | ⬜     |
-| 36 | Crear componente `Sidebar` (reemplaza `renderSidebar()`)           | ⬜     |
-| 37 | Configurar React Router con rutas: `/`, `/posts`, `/ideas`, `/calendar` | ⬜ |
-| 38 | Migrar capa `Storage` y `seedIfEmpty()` como módulo JS             | ⬜     |
+| 34 | Migrar CSS existente (`style.css`) al proyecto React               | ✅     |
+| 35 | Crear componente `Layout` (sidebar + topbar + outlet)              | ✅     |
+| 36 | Crear componente `Sidebar` (reemplaza `renderSidebar()`)           | ✅     |
+| 37 | Configurar React Router con rutas: `/`, `/posts`, `/ideas`, `/calendar` | ✅ |
+| 38 | Migrar capa `Storage` y `seedIfEmpty()` como módulo JS             | ✅     |
 
 ### Sprint 7 — Componentes compartidos
 
 | #  | Tarea                                                              | Estado |
 | -- | ------------------------------------------------------------------ | ------ |
-| 39 | Crear componente `Modal` (reemplaza `openModal`/`closeModal`)      | ⬜     |
-| 40 | Crear componente `Toast` (reemplaza `showToast()`)                 | ⬜     |
-| 41 | Crear componente `Tabs` reutilizable                               | ⬜     |
-| 42 | Crear componente `ConfirmDialog` (reemplaza confirm modals)        | ⬜     |
+| 39 | Crear componente `Modal` (reemplaza `openModal`/`closeModal`)      | ✅     |
+| 40 | Crear componente `Toast` (reemplaza `showToast()`)                 | ✅     |
+| 41 | Crear componente `Tabs` reutilizable                               | ✅     |
+| 42 | Crear componente `ConfirmDialog` (reemplaza confirm modals)        | ✅     |
 
 ### Sprint 8 — Páginas funcionales
 
 | #  | Tarea                                                              | Estado |
 | -- | ------------------------------------------------------------------ | ------ |
-| 43 | Migrar Dashboard como componente React                             | ⬜     |
-| 44 | Migrar página Posts (lista + filtros + CRUD modal)                 | ⬜     |
-| 45 | Migrar página Ideas (lista + filtros + CRUD + conversión)         | ⬜     |
-| 46 | Migrar página Calendario (grilla + detalle día + CRUD eventos)   | ⬜     |
+| 43 | Migrar Dashboard como componente React                             | ✅     |
+| 44 | Migrar página Posts (lista + filtros + CRUD modal)                 | ✅     |
+| 45 | Migrar página Ideas (lista + filtros + CRUD + conversión)         | ✅     |
+| 46 | Migrar página Calendario (grilla + detalle día + CRUD eventos)   | ✅     |
 
 ### Sprint 9 — Hooks, estado y pulido
 
 | #  | Tarea                                                              | Estado |
 | -- | ------------------------------------------------------------------ | ------ |
-| 47 | Extraer custom hooks: `useLocalStorage`, `usePosts`, `useIdeas`, `useEvents` | ⬜ |
-| 48 | Verificar paridad funcional con la versión vanilla                 | ⬜     |
-| 49 | Test manual del flujo completo en React                            | ⬜     |
+| 47 | Extraer custom hooks: `useLocalStorage`, `usePosts`, `useIdeas`, `useEvents` | ✅ |
+| 48 | Verificar paridad funcional con la versión vanilla                 | ✅     |
+| 49 | Test manual del flujo completo en React                            | ✅     |
 
 </details>
 
