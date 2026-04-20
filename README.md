@@ -2,43 +2,46 @@
 
 Aplicación web para planificar y organizar la presencia en redes sociales de un club de tenis. Permite gestionar ideas de contenido, programar publicaciones, coordinar eventos del club y visualizar todo desde un dashboard centralizado.
 
-> **Estado del proyecto:** MVP en desarrollo activo.
-
-<!-- TODO: descomentar cuando haya capturas reales
-![Dashboard](docs/screenshots/dashboard.png)
--->
+> **Estado del proyecto:** MVP vanilla (HTML/CSS/JS) completado ✅ — Migración a React en curso.
 
 ---
 
 ## Funcionalidades
 
-- **Dashboard** con KPIs en tiempo real (posts del mes, pendientes, ideas, eventos)
-- **Gestión de publicaciones** con estados (borrador, programado, publicado) y soporte multi-plataforma
-- **Banco de ideas** con prioridades y conversión directa a post
-- **Calendario de eventos** del club (torneos, clases, sociales) con vista mensual
-- **Datos de ejemplo** precargados automáticamente en el primer uso
-- **Navegación dinámica** con sidebar compartido generado por JS
-- **Modales y toasts** reutilizables para operaciones CRUD y feedback visual
+| Pantalla        | Descripción                                                                  |
+| --------------- | ---------------------------------------------------------------------------- |
+| **Dashboard**   | KPIs en tiempo real (posts del mes, pendientes, ideas, eventos) + resúmenes  |
+| **Publicaciones** | CRUD completo con estados (borrador → programado → publicado), filtros por status y soporte multi-plataforma |
+| **Ideas**       | Banco de ideas con prioridades, filtros por estado y conversión directa a post |
+| **Calendario**  | Vista mensual con eventos y posts programados, panel de detalle por día       |
+
+Además:
+- Datos de ejemplo precargados automáticamente en el primer uso
+- Navegación dinámica con sidebar compartido generado por JS
+- Modales y toasts reutilizables para CRUD y feedback visual
 
 ---
 
 ## Stack tecnológico
 
-| Capa          | Tecnología                              |
-| ------------- | --------------------------------------- |
-| Estructura    | HTML5 semántico                         |
-| Estilos       | CSS3 (custom properties, flexbox, grid) |
-| Lógica        | JavaScript vanilla (ES6+)              |
-| Persistencia  | `localStorage` (JSON)                  |
-| Dependencias  | Ninguna — zero frameworks, zero libs   |
+| Capa          | Vanilla (actual)                        | React (Fase 6)               |
+| ------------- | --------------------------------------- | ---------------------------- |
+| Estructura    | HTML5 semántico                         | JSX (React 18+)              |
+| Estilos       | CSS3 (custom properties, flexbox, grid) | CSS Modules o mismo CSS      |
+| Lógica        | JavaScript vanilla (ES6+)              | React + hooks                |
+| Ruteo         | Archivos HTML separados                | React Router                 |
+| Persistencia  | `localStorage` (JSON)                  | `localStorage` (sin cambios) |
+| Build         | Ninguno                                | Vite                         |
 
-### Decisiones técnicas destacables
+---
 
-- **Arquitectura sin backend**: los datos viven como arrays de objetos JSON en `localStorage`, con una capa `Storage` que abstrae la serialización.
-- **Modelo relacional en frontend**: 5 entidades (Post, Idea, Event, Media, Task) con foreign keys entre ellas, evitando duplicación de datos.
-- **Sidebar como componente JS**: en lugar de duplicar HTML entre páginas, `renderSidebar()` inyecta la navegación dinámicamente leyendo `data-page` del `<body>`.
-- **Seed automático**: `seedIfEmpty()` carga datos de ejemplo si el `localStorage` está vacío, garantizando que la app nunca se vea vacía al abrirla por primera vez.
-- **IDs únicos sin UUID**: generados con `timestamp + random base36`, suficiente para un entorno single-user sin colisiones.
+## Decisiones técnicas destacables
+
+- **Arquitectura sin backend** — datos como arrays JSON en `localStorage`, con capa `Storage` que abstrae serialización.
+- **Modelo relacional en frontend** — 5 entidades (Post, Idea, Event, Media, Task) con foreign keys, evitando duplicación.
+- **Sidebar como componente JS** — `renderSidebar()` inyecta la navegación leyendo `data-page` del `<body>`, sin duplicar HTML.
+- **Seed automático** — `seedIfEmpty()` carga datos de ejemplo si `localStorage` está vacío.
+- **IDs únicos sin UUID** — `timestamp + random base36`, suficiente para single-user sin colisiones.
 
 ---
 
@@ -64,187 +67,38 @@ tennis-club-social-manager/
 ├── index.html                  Redirect automático al dashboard
 ├── pages/
 │   ├── dashboard.html          Dashboard con KPIs y resúmenes
-│   ├── posts.html              CRUD completo de publicaciones (lista, filtros, modal, acciones)
-│   ├── ideas.html              CRUD completo de ideas (lista, filtros, crear/editar/eliminar, convertir a post)
-│   └── calendar.html           Calendario mensual con eventos y posts, panel de detalle por día
+│   ├── posts.html              CRUD completo de publicaciones
+│   ├── ideas.html              CRUD completo de ideas + conversión a post
+│   └── calendar.html           Calendario mensual + panel de detalle por día
 ├── scripts/
-│   └── app.js                  Storage, seed, sidebar, modal/toast, Posts CRUD, Ideas CRUD, Calendar + validación
+│   └── app.js                  Storage, seed, sidebar, modal/toast, CRUD (Posts, Ideas, Calendar)
 ├── styles/
-│   └── style.css               Reset, layout, componentes (modal, toast, tabs, post-item, idea-item, calendar, forms)
+│   └── style.css               Reset, layout, componentes (modal, toast, tabs, items, calendar, forms)
 └── assets/
     └── icons/
 ```
 
 ---
 
-## Capturas de pantalla
+## Roadmap
 
-> Se agregarán capturas una vez completadas las pantallas principales.
+| Fase | Descripción                    | Estado |
+| ---- | ------------------------------ | ------ |
+| 1    | Modelo de datos + mock data    | ✅     |
+| 2    | Mapeo pantallas ↔ datos        | ✅     |
+| 3    | Plan de funcionalidades MVP    | ✅     |
+| 4    | Backlog de tareas              | ✅     |
+| 5    | Implementación iterativa       | ✅     |
+| 6    | Migración a React              | ⬜     |
 
-<!--
-### Dashboard
-![Dashboard — vista general](docs/screenshots/dashboard.png)
-
-### Publicaciones
-![Publicaciones — lista con filtros](docs/screenshots/posts.png)
-
-### Ideas
-![Ideas — banco de ideas con prioridades](docs/screenshots/ideas.png)
-
-### Calendario
-![Calendario — vista mensual con eventos](docs/screenshots/calendar.png)
--->
+**Fuera del alcance del MVP:** Media (upload/galería) · Tasks (gestión de tareas) · Búsqueda global · Export/import · Dark mode
 
 ---
 
-## Documentación técnica
+## Progreso detallado
 
 <details>
-<summary><strong>Modelo de datos (5 entidades)</strong></summary>
-
-### Post
-
-| Campo           | Tipo            | Notas                                        |
-| --------------- | --------------- | -------------------------------------------- |
-| `id`            | `string`        | Ej: `"post_173…"`                            |
-| `title`         | `string`        | Título / asunto                              |
-| `body`          | `string`        | Texto / caption del post                     |
-| `status`        | `enum`          | `"idea"` · `"draft"` · `"scheduled"` · `"published"` |
-| `platforms`     | `string[]`      | `["instagram","facebook"]`                   |
-| `scheduledDate` | `string \| null`| ISO date, null si idea/draft                 |
-| `publishedDate` | `string \| null`| Se llena al marcar publicado                 |
-| `eventId`       | `string \| null`| FK → Event                                   |
-| `mediaIds`      | `string[]`      | FK[] → Media                                 |
-| `tags`          | `string[]`      | `["torneo","juveniles"]`                     |
-| `createdAt`     | `string`        | ISO datetime                                 |
-| `updatedAt`     | `string`        | ISO datetime                                 |
-
-### Idea
-
-| Campo             | Tipo            | Notas                                      |
-| ----------------- | --------------- | ------------------------------------------ |
-| `id`              | `string`        |                                            |
-| `title`           | `string`        |                                            |
-| `description`     | `string`        | Detalle libre                              |
-| `priority`        | `enum`          | `"alta"` · `"media"` · `"baja"`           |
-| `status`          | `enum`          | `"nueva"` · `"aprobada"` · `"descartada"` · `"convertida"` |
-| `convertedPostId` | `string \| null`| FK → Post (cuando se convierte)            |
-| `tags`            | `string[]`      | Mismas etiquetas que Post                  |
-| `createdAt`       | `string`        |                                            |
-
-### Event
-
-| Campo         | Tipo            | Notas                                      |
-| ------------- | --------------- | ------------------------------------------ |
-| `id`          | `string`        |                                            |
-| `title`       | `string`        |                                            |
-| `date`        | `string`        | ISO date                                   |
-| `endDate`     | `string \| null`| Para eventos de varios días                |
-| `type`        | `enum`          | `"torneo"` · `"social"` · `"clase"` · `"otro"` |
-| `description` | `string`        |                                            |
-| `createdAt`   | `string`        |                                            |
-
-### Media
-
-| Campo      | Tipo       | Notas                              |
-| ---------- | ---------- | ---------------------------------- |
-| `id`       | `string`   |                                    |
-| `fileName` | `string`   | Nombre original del archivo        |
-| `url`      | `string`   | Path local o data-URL              |
-| `type`     | `enum`     | `"image"` · `"video"`             |
-| `caption`  | `string`   | Descripción breve                  |
-| `tags`     | `string[]` |                                    |
-| `createdAt`| `string`   |                                    |
-
-### Task
-
-| Campo      | Tipo            | Notas                                    |
-| ---------- | --------------- | ---------------------------------------- |
-| `id`       | `string`        |                                          |
-| `title`    | `string`        |                                          |
-| `status`   | `enum`          | `"pendiente"` · `"en-progreso"` · `"completada"` |
-| `dueDate`  | `string \| null`|                                          |
-| `postId`   | `string \| null`| FK → Post                               |
-| `eventId`  | `string \| null`| FK → Event                              |
-| `createdAt`| `string`        |                                          |
-
-### Relaciones
-
-```
-Event  1 ──→ N  Post        Un evento genera varios posts
-Post   1 ──→ N  Media       Un post tiene varias fotos/videos (via mediaIds[])
-Idea   1 ──→ 0..1  Post     Una idea aprobada se convierte en un post
-Post   1 ──→ N  Task        Tareas asociadas a un post
-Event  1 ──→ N  Task        Tareas asociadas a un evento
-```
-
-Las FK viven en el lado N (hijo). `Post.mediaIds` es un array porque Media es reutilizable entre posts. `Idea.convertedPostId` da trazabilidad sin duplicar texto.
-
-</details>
-
-<details>
-<summary><strong>Mapeo pantallas ↔ datos</strong></summary>
-
-### Dashboard (`pages/dashboard.html`)
-
-| Sección                         | Datos                           | Fuente en app.js                     |
-| ------------------------------- | ------------------------------- | ------------------------------------ |
-| Stat: Posts este mes            | `Post[]` filtrados por mes      | `Posts.getThisMonth().length`        |
-| Stat: Pendientes                | `Post[]` draft/scheduled        | `Posts.getPending().length`          |
-| Stat: Ideas guardadas           | Total de `Idea[]`               | `Ideas.getAll().length`             |
-| Stat: Próximos eventos          | `Event[]` fecha ≥ hoy           | `Events.getUpcoming().length`       |
-| Lista: Próximas publicaciones   | Top 3 posts scheduled           | `Posts.getUpcoming(3)`              |
-| Lista: Ideas recientes          | Top 3 ideas más nuevas          | `Ideas.getRecent(3)`               |
-| Lista: Próximos eventos         | Top 3 eventos futuros           | `Events.getUpcoming(3)`            |
-
-### Posts (`pages/posts.html`)
-
-| Sección             | Datos                                           |
-| ------------------- | ----------------------------------------------- |
-| Filtros             | Valores únicos de `platforms`, `status`, `tags` |
-| Lista de posts      | `Post[]` completo, filtrable                    |
-| Formulario          | Un `Post` + `Media[]` + `Event`                 |
-| Acciones            | Crear · Editar · Eliminar · Cambiar status      |
-
-### Ideas (`pages/ideas.html`)
-
-| Sección             | Datos                                           |
-| ------------------- | ----------------------------------------------- |
-| Filtros             | Valores únicos de `priority`, `status`          |
-| Lista de ideas      | `Idea[]` completo, filtrable                    |
-| Formulario          | Una `Idea`                                      |
-| Acciones            | Crear · Editar · Eliminar · Convertir a Post    |
-
-### Calendario (`pages/calendar.html`)
-
-| Sección             | Datos                                           |
-| ------------------- | ----------------------------------------------- |
-| Grilla mensual      | `Event[]` + `Post[]` con scheduledDate          |
-| Detalle del día     | Items del día seleccionado                      |
-| Formulario          | Un `Event`                                      |
-| Acciones            | Crear · Editar · Eliminar evento                |
-
-### Flujo entre pantallas
-
-```
- ┌──────────┐   convertir    ┌──────────┐   vincular    ┌──────────┐
- │  Ideas   │ ──────────────→│  Posts    │←──────────────│ Calendar │
- │          │  crea Post +   │          │  Post.eventId  │ (Events) │
- └──────────┘  actualiza Idea└──────────┘                └──────────┘
-                                  │
-                           mediaIds[]
-                                  ↓
-                            ┌──────────┐
-                            │  Media   │
-                            └──────────┘
-
-                  Dashboard lee todo en modo resumen
-```
-
-</details>
-
-<details>
-<summary><strong>Backlog de implementación (32 tareas / 5 sprints)</strong></summary>
+<summary><strong>Fase 5 — Backlog vanilla (32/32 completadas ✅)</strong></summary>
 
 ### Sprint 1 — Infraestructura base
 
@@ -301,25 +155,200 @@ Las FK viven en el lado N (hijo). `Post.mediaIds` es un array porque Media es re
 | 29 | Dashboard: links funcionales "Ver todas →"               | ✅     |
 | 30 | Fix bug: `p.platform` → `p.platforms`                    | ✅     |
 | 31 | Validación de formularios                                | ✅     |
-| 32 | Test manual del flujo completo                           | ⬜     |
+| 32 | Test manual del flujo completo                           | ✅     |
+
+</details>
+
+<details>
+<summary><strong>Fase 6 — Backlog de migración a React (0/17)</strong></summary>
+
+### Sprint 6 — Setup + layout base
+
+| #  | Tarea                                                              | Estado |
+| -- | ------------------------------------------------------------------ | ------ |
+| 33 | Crear proyecto React con Vite (`npm create vite@latest`)           | ⬜     |
+| 34 | Migrar CSS existente (`style.css`) al proyecto React               | ⬜     |
+| 35 | Crear componente `Layout` (sidebar + topbar + outlet)              | ⬜     |
+| 36 | Crear componente `Sidebar` (reemplaza `renderSidebar()`)           | ⬜     |
+| 37 | Configurar React Router con rutas: `/`, `/posts`, `/ideas`, `/calendar` | ⬜ |
+| 38 | Migrar capa `Storage` y `seedIfEmpty()` como módulo JS             | ⬜     |
+
+### Sprint 7 — Componentes compartidos
+
+| #  | Tarea                                                              | Estado |
+| -- | ------------------------------------------------------------------ | ------ |
+| 39 | Crear componente `Modal` (reemplaza `openModal`/`closeModal`)      | ⬜     |
+| 40 | Crear componente `Toast` (reemplaza `showToast()`)                 | ⬜     |
+| 41 | Crear componente `Tabs` reutilizable                               | ⬜     |
+| 42 | Crear componente `ConfirmDialog` (reemplaza confirm modals)        | ⬜     |
+
+### Sprint 8 — Páginas funcionales
+
+| #  | Tarea                                                              | Estado |
+| -- | ------------------------------------------------------------------ | ------ |
+| 43 | Migrar Dashboard como componente React                             | ⬜     |
+| 44 | Migrar página Posts (lista + filtros + CRUD modal)                 | ⬜     |
+| 45 | Migrar página Ideas (lista + filtros + CRUD + conversión)         | ⬜     |
+| 46 | Migrar página Calendario (grilla + detalle día + CRUD eventos)   | ⬜     |
+
+### Sprint 9 — Hooks, estado y pulido
+
+| #  | Tarea                                                              | Estado |
+| -- | ------------------------------------------------------------------ | ------ |
+| 47 | Extraer custom hooks: `useLocalStorage`, `usePosts`, `useIdeas`, `useEvents` | ⬜ |
+| 48 | Verificar paridad funcional con la versión vanilla                 | ⬜     |
+| 49 | Test manual del flujo completo en React                            | ⬜     |
 
 </details>
 
 ---
 
-## Roadmap
+## Documentación técnica
 
-| Fase | Descripción                    | Estado |
-| ---- | ------------------------------ | ------ |
-| 1    | Modelo de datos + mock data    | ✅     |
-| 2    | Mapeo pantallas ↔ datos        | ✅     |
-| 3    | Plan de funcionalidades MVP    | ✅     |
-| 4    | Backlog de tareas              | ✅     |
-| 5    | Implementación iterativa       | ⬜     |
+<details>
+<summary><strong>Modelo de datos (5 entidades)</strong></summary>
 
-### Fuera del alcance del MVP
+### Post
 
-Media (upload/galería) · Tasks (gestión de tareas) · Búsqueda global · Export/import de datos · Dark mode
+| Campo           | Tipo            | Notas                                        |
+| --------------- | --------------- | -------------------------------------------- |
+| `id`            | `string`        | Ej: `"post_173…"`                            |
+| `title`         | `string`        | Título / asunto                              |
+| `body`          | `string`        | Texto / caption del post                     |
+| `status`        | `enum`          | `"draft"` · `"scheduled"` · `"published"`    |
+| `platforms`     | `string[]`      | `["instagram","facebook"]`                   |
+| `scheduledDate` | `string \| null`| ISO date, null si draft                      |
+| `publishedDate` | `string \| null`| Se llena al marcar publicado                 |
+| `eventId`       | `string \| null`| FK → Event                                   |
+| `mediaIds`      | `string[]`      | FK[] → Media                                 |
+| `tags`          | `string[]`      | `["torneo","juveniles"]`                     |
+| `createdAt`     | `string`        | ISO datetime                                 |
+| `updatedAt`     | `string`        | ISO datetime                                 |
+
+### Idea
+
+| Campo             | Tipo            | Notas                                      |
+| ----------------- | --------------- | ------------------------------------------ |
+| `id`              | `string`        |                                            |
+| `title`           | `string`        |                                            |
+| `description`     | `string`        | Detalle libre                              |
+| `priority`        | `enum`          | `"alta"` · `"media"` · `"baja"`           |
+| `status`          | `enum`          | `"nueva"` · `"aprobada"` · `"descartada"` · `"convertida"` |
+| `convertedPostId` | `string \| null`| FK → Post (cuando se convierte)            |
+| `tags`            | `string[]`      |                                            |
+| `createdAt`       | `string`        |                                            |
+
+### Event
+
+| Campo         | Tipo            | Notas                                      |
+| ------------- | --------------- | ------------------------------------------ |
+| `id`          | `string`        |                                            |
+| `title`       | `string`        |                                            |
+| `date`        | `string`        | ISO date                                   |
+| `endDate`     | `string \| null`| Para eventos de varios días                |
+| `type`        | `enum`          | `"torneo"` · `"social"` · `"clase"` · `"otro"` |
+| `description` | `string`        |                                            |
+| `createdAt`   | `string`        |                                            |
+
+### Media *(fuera del MVP)*
+
+| Campo      | Tipo       | Notas                              |
+| ---------- | ---------- | ---------------------------------- |
+| `id`       | `string`   |                                    |
+| `fileName` | `string`   | Nombre original del archivo        |
+| `url`      | `string`   | Path local o data-URL              |
+| `type`     | `enum`     | `"image"` · `"video"`             |
+| `caption`  | `string`   | Descripción breve                  |
+| `tags`     | `string[]` |                                    |
+| `createdAt`| `string`   |                                    |
+
+### Task *(fuera del MVP)*
+
+| Campo      | Tipo            | Notas                                    |
+| ---------- | --------------- | ---------------------------------------- |
+| `id`       | `string`        |                                          |
+| `title`    | `string`        |                                          |
+| `status`   | `enum`          | `"pendiente"` · `"en-progreso"` · `"completada"` |
+| `dueDate`  | `string \| null`|                                          |
+| `postId`   | `string \| null`| FK → Post                               |
+| `eventId`  | `string \| null`| FK → Event                              |
+| `createdAt`| `string`        |                                          |
+
+### Relaciones
+
+```
+Event  1 ──→ N  Post        Un evento genera varios posts
+Post   1 ──→ N  Media       Un post tiene varias fotos/videos (via mediaIds[])
+Idea   1 ──→ 0..1  Post     Una idea aprobada se convierte en un post
+Post   1 ──→ N  Task        Tareas asociadas a un post
+Event  1 ──→ N  Task        Tareas asociadas a un evento
+```
+
+Las FK viven en el lado N (hijo). `Post.mediaIds` es un array porque Media es reutilizable entre posts. `Idea.convertedPostId` da trazabilidad sin duplicar texto.
+
+</details>
+
+<details>
+<summary><strong>Mapeo pantallas ↔ datos</strong></summary>
+
+### Dashboard
+
+| Sección                         | Datos                           | Fuente                               |
+| ------------------------------- | ------------------------------- | ------------------------------------ |
+| Stat: Posts este mes            | `Post[]` filtrados por mes      | `Posts.getThisMonth().length`        |
+| Stat: Pendientes                | `Post[]` draft/scheduled        | `Posts.getPending().length`          |
+| Stat: Ideas guardadas           | Total de `Idea[]`               | `Ideas.getAll().length`             |
+| Stat: Próximos eventos          | `Event[]` fecha ≥ hoy           | `Events.getUpcoming().length`       |
+| Lista: Próximas publicaciones   | Top 3 posts scheduled           | `Posts.getUpcoming(3)`              |
+| Lista: Ideas recientes          | Top 3 ideas más nuevas          | `Ideas.getRecent(3)`               |
+| Lista: Próximos eventos         | Top 3 eventos futuros           | `Events.getUpcoming(3)`            |
+
+### Posts
+
+| Sección             | Datos                                           |
+| ------------------- | ----------------------------------------------- |
+| Filtros (tabs)      | `status`: all · draft · scheduled · published   |
+| Lista de posts      | `Post[]` completo, filtrable y ordenable         |
+| Formulario modal    | Campos: título, body, plataformas, estado, fecha, tags |
+| Acciones            | Crear · Editar · Eliminar · Avanzar status      |
+
+### Ideas
+
+| Sección             | Datos                                           |
+| ------------------- | ----------------------------------------------- |
+| Filtros (tabs)      | `status`: all · nueva · aprobada · convertida · descartada |
+| Lista de ideas      | `Idea[]` completo, filtrable                    |
+| Formulario modal    | Campos: título, descripción, prioridad, estado, tags |
+| Acciones            | Crear · Editar · Eliminar · Convertir a Post    |
+
+### Calendario
+
+| Sección             | Datos                                           |
+| ------------------- | ----------------------------------------------- |
+| Grilla mensual      | `Event[]` + `Post[]` con scheduledDate como dots |
+| Navegación          | Botones prev/next para cambiar de mes           |
+| Detalle del día     | Lista de eventos y posts del día seleccionado   |
+| Formulario modal    | Campos: título, fecha, fecha fin, tipo, descripción |
+| Acciones            | Crear · Editar · Eliminar evento                |
+
+### Flujo entre pantallas
+
+```
+ ┌──────────┐   convertir    ┌──────────┐   vincular    ┌──────────┐
+ │  Ideas   │ ──────────────→│  Posts    │←──────────────│ Calendar │
+ │          │  crea Post +   │          │  Post.eventId  │ (Events) │
+ └──────────┘  actualiza Idea└──────────┘                └──────────┘
+                                  │
+                           mediaIds[]
+                                  ↓
+                            ┌──────────┐
+                            │  Media   │
+                            └──────────┘
+
+                  Dashboard lee todo en modo resumen
+```
+
+</details>
 
 ---
 
