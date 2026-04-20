@@ -222,7 +222,7 @@ function renderDashboard() {
           <li class="list-item">
             <span class="list-item__date">${formatDate(p.scheduledDate)}</span>
             <span class="list-item__title">${p.title}</span>
-            <span class="list-item__platforms">${p.platform.join(' · ')}</span>
+            <span class="list-item__platforms">${p.platforms.join(' · ')}</span>
           </li>`).join('')
       : '<li class="posts-list__empty">No hay publicaciones programadas.</li>';
   }
@@ -340,6 +340,21 @@ function bindModalClose() {
 
 // --- Toast ---
 
+// Resalta un campo del formulario con borde rojo y lo enfoca
+function markFieldError(fieldId) {
+  const el = document.getElementById(fieldId);
+  if (!el) return;
+  el.classList.add('form-input--error');
+  el.focus();
+  const clear = () => {
+    el.classList.remove('form-input--error');
+    el.removeEventListener('input',  clear);
+    el.removeEventListener('change', clear);
+  };
+  el.addEventListener('input',  clear);
+  el.addEventListener('change', clear);
+}
+
 function showToast(message, type = 'success') {
   const toast  = document.getElementById('toast');
   const iconEl = document.getElementById('toast-icon');
@@ -446,7 +461,7 @@ function buildPostFormHTML(post = null) {
 
     <div class="form-group">
       <label class="form-label">Plataformas *</label>
-      <div class="form-checkboxes">
+      <div class="form-checkboxes" id="f-platforms-group">
         ${platforms.map(p => `
           <label class="form-checkbox">
             <input type="checkbox" value="${p}"
@@ -496,8 +511,8 @@ function getPostFormValues() {
 }
 
 function validatePostForm(values) {
-  if (!values.title)            return 'El título es obligatorio.';
-  if (!values.platforms.length) return 'Seleccioná al menos una plataforma.';
+  if (!values.title)            return { message: 'El título es obligatorio.',           fieldId: 'f-title' };
+  if (!values.platforms.length) return { message: 'Seleccioná al menos una plataforma.', fieldId: 'f-platforms-group' };
   return null;
 }
 
@@ -518,7 +533,7 @@ function openPostForm(post = null) {
 function saveNewPost() {
   const values = getPostFormValues();
   const error  = validatePostForm(values);
-  if (error) { showToast(error, 'warning'); return; }
+  if (error) { markFieldError(error.fieldId); showToast(error.message, 'warning'); return; }
 
   const now  = new Date().toISOString();
   const post = {
@@ -543,7 +558,7 @@ function saveNewPost() {
 function saveEditPost(id) {
   const values = getPostFormValues();
   const error  = validatePostForm(values);
-  if (error) { showToast(error, 'warning'); return; }
+  if (error) { markFieldError(error.fieldId); showToast(error.message, 'warning'); return; }
 
   const posts = Posts.getAll();
   const index = posts.findIndex(p => p.id === id);
@@ -774,7 +789,7 @@ function getIdeaFormValues() {
 }
 
 function validateIdeaForm(values) {
-  if (!values.title) return 'El título es obligatorio.';
+  if (!values.title) return { message: 'El título es obligatorio.', fieldId: 'f-idea-title' };
   return null;
 }
 
@@ -795,7 +810,7 @@ function openIdeaForm(idea = null) {
 function saveNewIdea() {
   const values = getIdeaFormValues();
   const error  = validateIdeaForm(values);
-  if (error) { showToast(error, 'warning'); return; }
+  if (error) { markFieldError(error.fieldId); showToast(error.message, 'warning'); return; }
 
   const now  = new Date().toISOString();
   const idea = {
@@ -817,7 +832,7 @@ function saveNewIdea() {
 function saveEditIdea(id) {
   const values = getIdeaFormValues();
   const error  = validateIdeaForm(values);
-  if (error) { showToast(error, 'warning'); return; }
+  if (error) { markFieldError(error.fieldId); showToast(error.message, 'warning'); return; }
 
   const ideas = Ideas.getAll();
   const index = ideas.findIndex(i => i.id === id);
@@ -1132,8 +1147,8 @@ function getEventFormValues() {
 }
 
 function validateEventForm(values) {
-  if (!values.title) return 'El título es obligatorio.';
-  if (!values.date)  return 'La fecha es obligatoria.';
+  if (!values.title) return { message: 'El título es obligatorio.', fieldId: 'f-evt-title' };
+  if (!values.date)  return { message: 'La fecha es obligatoria.',  fieldId: 'f-evt-date' };
   return null;
 }
 
@@ -1154,7 +1169,7 @@ function openEventForm(event = null) {
 function saveNewEvent() {
   const values = getEventFormValues();
   const error  = validateEventForm(values);
-  if (error) { showToast(error, 'warning'); return; }
+  if (error) { markFieldError(error.fieldId); showToast(error.message, 'warning'); return; }
 
   const event = {
     id:        generateId('evt'),
@@ -1175,7 +1190,7 @@ function saveNewEvent() {
 function saveEditEvent(id) {
   const values = getEventFormValues();
   const error  = validateEventForm(values);
-  if (error) { showToast(error, 'warning'); return; }
+  if (error) { markFieldError(error.fieldId); showToast(error.message, 'warning'); return; }
 
   const events = Events.getAll();
   const index  = events.findIndex(e => e.id === id);

@@ -622,6 +622,22 @@ body {
   border-color: var(--color-primary);
 }
 
+.form-input--error {
+  border-color: #c62828 !important;
+  background-color: #fff5f5;
+}
+
+.form-input--error:focus {
+  border-color: #c62828 !important;
+}
+
+.form-checkboxes.form-input--error {
+  border: 1px solid #c62828;
+  border-radius: 8px;
+  background-color: #fff5f5;
+  padding: 8px;
+}
+
 .form-textarea {
   resize: vertical;
   min-height: 90px;

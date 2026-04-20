@@ -66,11 +66,11 @@ tennis-club-social-manager/
 │   ├── dashboard.html          Dashboard con KPIs y resúmenes
 │   ├── posts.html              CRUD completo de publicaciones (lista, filtros, modal, acciones)
 │   ├── ideas.html              CRUD completo de ideas (lista, filtros, crear/editar/eliminar, convertir a post)
-│   └── calendar.html           Calendario de eventos (pendiente)
+│   └── calendar.html           Calendario mensual con eventos y posts, panel de detalle por día
 ├── scripts/
-│   └── app.js                  Storage, seed, sidebar, modal/toast helpers, Posts CRUD, Ideas CRUD + validación
+│   └── app.js                  Storage, seed, sidebar, modal/toast, Posts CRUD, Ideas CRUD, Calendar + validación
 ├── styles/
-│   └── style.css               Reset, layout, componentes (modal, toast, tabs, post-item, idea-item, forms)
+│   └── style.css               Reset, layout, componentes (modal, toast, tabs, post-item, idea-item, calendar, forms)
 └── assets/
     └── icons/
 ```
@@ -284,22 +284,22 @@ Las FK viven en el lado N (hijo). `Post.mediaIds` es un array porque Media es re
 
 | #  | Tarea                                                    | Estado |
 | -- | -------------------------------------------------------- | ------ |
-| 20 | Crear HTML de `calendar.html`                            | ⬜     |
-| 21 | Renderizar grilla mensual                                | ⬜     |
-| 22 | Navegación entre meses                                   | ⬜     |
-| 23 | Mostrar eventos como dots en los días                    | ⬜     |
-| 24 | Formulario modal: crear evento nuevo                     | ⬜     |
-| 25 | Formulario modal: editar evento existente                | ⬜     |
-| 26 | Eliminar evento con confirm dialog                       | ⬜     |
-| 27 | Click en día → panel con detalle                         | ⬜     |
+| 20 | Crear HTML de `calendar.html`                            | ✅     |
+| 21 | Renderizar grilla mensual                                | ✅     |
+| 22 | Navegación entre meses                                   | ✅     |
+| 23 | Mostrar eventos como dots en los días                    | ✅     |
+| 24 | Formulario modal: crear evento nuevo                     | ✅     |
+| 25 | Formulario modal: editar evento existente                | ✅     |
+| 26 | Eliminar evento con confirm dialog                       | ✅     |
+| 27 | Click en día → panel con detalle                         | ✅     |
 
 ### Sprint 5 — Pulido + integración
 
 | #  | Tarea                                                    | Estado |
 | -- | -------------------------------------------------------- | ------ |
-| 28 | Mostrar posts programados en el calendario               | ⬜     |
-| 29 | Dashboard: links funcionales "Ver todas →"               | ⬜     |
-| 30 | Fix bug: `p.platform` → `p.platforms`                    | ⬜     |
+| 28 | Mostrar posts programados en el calendario               | ✅     |
+| 29 | Dashboard: links funcionales "Ver todas →"               | ✅     |
+| 30 | Fix bug: `p.platform` → `p.platforms`                    | ✅     |
 | 31 | Validación de formularios                                | ✅     |
 | 32 | Test manual del flujo completo                           | ⬜     |
 
