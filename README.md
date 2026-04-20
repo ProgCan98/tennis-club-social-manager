@@ -45,7 +45,29 @@ Además:
 
 ---
 
-## Cómo ejecutar
+## Deploy online (gratis)
+
+El repo incluye configuración lista para Vercel y Netlify. Ambas opciones son gratuitas y generan un link público real.
+
+### Opción A — Vercel (recomendado)
+
+1. Ir a [vercel.com](https://vercel.com) → **Add New Project**
+2. Importar el repositorio de GitHub
+3. Vercel detecta automáticamente la configuración desde `vercel.json` — no hay nada más que configurar
+4. Click en **Deploy**
+
+### Opción B — Netlify
+
+1. Ir a [netlify.com](https://netlify.com) → **Add new site → Import from Git**
+2. Importar el repositorio de GitHub
+3. Netlify detecta automáticamente la configuración desde `netlify.toml` — no hay nada más que configurar
+4. Click en **Deploy site**
+
+> Los archivos `vercel.json` y `netlify.toml` en la raíz del repo le indican a cada plataforma que el proyecto a buildear está en la subcarpeta `react/`, con `npm run build` como comando y `dist/` como output.
+
+---
+
+## Cómo ejecutar (local)
 
 ### Versión vanilla (HTML/CSS/JS)
 
