@@ -119,14 +119,16 @@ tennis-club-social-manager/
 
 ## Roadmap
 
-| Fase | Descripción                    | Estado |
-| ---- | ------------------------------ | ------ |
-| 1    | Modelo de datos + mock data    | ✅     |
-| 2    | Mapeo pantallas ↔ datos        | ✅     |
-| 3    | Plan de funcionalidades MVP    | ✅     |
-| 4    | Backlog de tareas              | ✅     |
-| 5    | Implementación iterativa       | ✅     |
-| 6    | Migración a React              | ✅     |
+| Fase | Descripción                                      | Estado |
+| ---- | ------------------------------------------------ | ------ |
+| 1    | Modelo de datos + mock data                      | ✅     |
+| 2    | Mapeo pantallas ↔ datos                          | ✅     |
+| 3    | Plan de funcionalidades MVP                      | ✅     |
+| 4    | Backlog de tareas                                | ✅     |
+| 5    | Implementación iterativa (vanilla)               | ✅     |
+| 6    | Migración a React + deploy en Vercel             | ✅     |
+| 7    | Base de datos PostgreSQL en la nube              | ⬜     |
+| 8    | API REST con Node.js + Express                   | ⬜     |
 
 **Fuera del alcance del MVP:** Media (upload/galería) · Tasks (gestión de tareas) · Búsqueda global · Export/import · Dark mode
 
