@@ -10,7 +10,8 @@ import Sidebar from './Sidebar'
  *   children   (ReactNode)   — contenido de la página (outlet)
  */
 function Layout({ title, activePage, actions, children }) {
-  const [currentDate, setCurrentDate] = useState('')
+  const [currentDate,  setCurrentDate]  = useState('')
+  const [sidebarOpen,  setSidebarOpen]  = useState(false)
 
   useEffect(() => {
     setCurrentDate(
@@ -20,13 +21,35 @@ function Layout({ title, activePage, actions, children }) {
     )
   }, [])
 
+  // Cierra el sidebar al redimensionar a desktop
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 769px)')
+    const handler = (e) => { if (e.matches) setSidebarOpen(false) }
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
+
   return (
     <>
-      <Sidebar activePage={activePage} />
+      <Sidebar
+        activePage={activePage}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
 
       <div className="layout">
 
         <header className="topbar">
+          {/* Botón hamburguesa — solo visible en mobile via CSS */}
+          <button
+            className="topbar__hamburger"
+            onClick={() => setSidebarOpen(true)}
+            aria-label="Abrir menú"
+            aria-expanded={sidebarOpen}
+          >
+            <span /><span /><span />
+          </button>
+
           <div className="topbar__greeting">
             <h2 className="topbar__title">{title}</h2>
             <p className="topbar__date">{currentDate}</p>

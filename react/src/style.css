@@ -965,3 +965,579 @@ body {
   display: flex;
   gap: 4px;
 }
+
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* =============================================
+   RESPONSIVE — Tablet (max 1024px)
+============================================= */
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-width: 200px;
+  }
+
+  .main-content {
+    padding: 24px;
+    gap: 24px;
+  }
+
+  .topbar {
+    padding: 0 24px;
+  }
+
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .calendar-cell {
+    min-height: 56px;
+    padding: 4px 6px;
+  }
+}
+
+/* =============================================
+   RESPONSIVE — Mobile (max 768px)
+   Sidebar como drawer lateral + hamburguesa
+============================================= */
+@media (max-width: 768px) {
+
+  /* --- Sidebar oculto fuera de pantalla por defecto --- */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 100vh;
+    z-index: 500;
+    transform: translateX(-100%);
+    transition: transform 0.28s ease;
+    box-shadow: none;
+    padding: 24px 0;
+    flex-direction: column;
+  }
+
+  /* Drawer abierto */
+  .sidebar--open {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0,0,0,0.22);
+  }
+
+  /* Overlay oscuro detrás del drawer */
+  .sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 400;
+    animation: fadeInOverlay 0.2s ease forwards;
+  }
+
+  /* Botón × para cerrar — visible solo en mobile */
+  .sidebar__close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.8);
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background 0.15s;
+  }
+
+  .sidebar__close:hover {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+  }
+
+  /* Marca la brand como relative para posicionar el botón */
+  .sidebar__brand {
+    position: relative;
+  }
+
+  /* Restaurar nav__list vertical (ya lo era, pero por si acaso) */
+  .nav__list {
+    flex-direction: column;
+  }
+
+  /* --- Layout: sin margen izquierdo --- */
+  .layout {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  /* --- Topbar: hamburguesa + título + acción --- */
+  .topbar {
+    padding: 0 16px;
+    gap: 12px;
+    height: auto;
+    min-height: var(--topbar-height);
+    flex-wrap: nowrap;
+  }
+
+  /* Botón hamburguesa */
+  .topbar__hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 4px;
+    flex-shrink: 0;
+  }
+
+  .topbar__hamburger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--color-text);
+    border-radius: 2px;
+    transition: background 0.2s;
+  }
+
+  .topbar__hamburger:hover span {
+    background: var(--color-primary);
+  }
+
+  .topbar__greeting {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .topbar__title {
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .topbar__date {
+    display: none;
+  }
+
+  .topbar__actions .btn {
+    font-size: 0.82rem;
+    padding: 7px 12px;
+    white-space: nowrap;
+  }
+
+  /* --- Contenido principal --- */
+  .main-content {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .section {
+    padding: 16px;
+  }
+
+  .section__header {
+    margin-top: -16px;
+  }
+
+  /* --- Stats: 2 columnas --- */
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .card__value {
+    font-size: 1.8rem;
+  }
+
+  /* --- Tabs: scroll horizontal --- */
+  .tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+  }
+
+  .tab {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* --- Post item --- */
+  .post-item {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .post-item__meta {
+    align-items: flex-start;
+    flex-direction: row;
+    gap: 12px;
+  }
+
+  .post-item__actions {
+    margin-left: auto;
+  }
+
+  /* --- Idea item --- */
+  .idea-item {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .idea-item__main {
+    flex-wrap: wrap;
+  }
+
+  /* --- Calendario compacto --- */
+  .calendar-cell {
+    min-height: 44px;
+    padding: 3px 4px;
+  }
+
+  .calendar-cell__day {
+    font-size: 0.75rem;
+  }
+
+  .calendar-dot {
+    width: 6px;
+    height: 6px;
+  }
+
+  .calendar-weekdays span {
+    font-size: 0.65rem;
+  }
+
+  .calendar-nav__title {
+    font-size: 0.95rem;
+    min-width: 140px;
+  }
+
+  /* --- Modal bottom-sheet --- */
+  .modal {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .modal__body {
+    max-width: 100%;
+    width: 100%;
+    max-height: 92vh;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+
+  /* --- Toast --- */
+  .toast {
+    bottom: 16px;
+    right: 16px;
+    left: 16px;
+    min-width: unset;
+    max-width: unset;
+  }
+
+  /* --- List items del dashboard --- */
+  .list-item {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .list-item__date {
+    min-width: unset;
+  }
+}
+
+/* =============================================
+   RESPONSIVE — Mobile pequeño (max 480px)
+============================================= */
+@media (max-width: 480px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .calendar-grid {
+    gap: 2px;
+  }
+
+  .calendar-cell {
+    min-height: 34px;
+    padding: 2px 3px;
+  }
+
+  .post-item__title,
+  .idea-item__title {
+    font-size: 0.88rem;
+  }
+}
+
+/* --- Hamburguesa y cierre del drawer: solo visibles en mobile --- */
+@media (min-width: 769px) {
+  .topbar__hamburger {
+    display: none;
+  }
+
+  .sidebar__close {
+    display: none;
+  }
+}
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-width: 200px;
+  }
+
+  .main-content {
+    padding: 24px;
+    gap: 24px;
+  }
+
+  .topbar {
+    padding: 0 24px;
+  }
+
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .calendar-cell {
+    min-height: 56px;
+    padding: 4px 6px;
+  }
+}
+
+/* =============================================
+   RESPONSIVE — Mobile (max 768px)
+   Sidebar se convierte en barra inferior
+============================================= */
+@media (max-width: 768px) {
+
+  /* --- Sidebar: barra de navegación inferior --- */
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    flex-direction: row;
+    padding: 0;
+    z-index: 200;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.12);
+  }
+
+  .sidebar__brand {
+    display: none;
+  }
+
+  .sidebar__nav {
+    margin-top: 0;
+    flex: 1;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .nav__list {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .nav__item {
+    flex: 1;
+    margin: 0;
+  }
+
+  .nav__link {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 6px 4px;
+    font-size: 0.65rem;
+    border-left: none;
+    border-top: 3px solid transparent;
+    height: 100%;
+  }
+
+  .nav__icon {
+    font-size: 1.3rem;
+    line-height: 1;
+  }
+
+  .nav__item--active .nav__link {
+    border-left-color: transparent;
+    border-top-color: var(--color-accent);
+    background: rgba(255,255,255,0.15);
+  }
+
+  /* --- Layout: quita margen izquierdo, agrega padding inferior para la barra --- */
+  .layout {
+    margin-left: 0;
+    padding-bottom: 60px;
+  }
+
+  /* --- Topbar --- */
+  .topbar {
+    padding: 0 16px;
+    height: auto;
+    min-height: 56px;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .topbar__actions {
+    width: 100%;
+  }
+
+  .topbar__actions .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* --- Contenido principal --- */
+  .main-content {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .section {
+    padding: 16px;
+  }
+
+  /* --- Stats: 2 columnas en mobile --- */
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .card__value {
+    font-size: 1.8rem;
+  }
+
+  /* --- Tabs: scroll horizontal si no caben --- */
+  .tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+  }
+
+  .tab {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* --- Post item: apila en mobile --- */
+  .post-item {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .post-item__meta {
+    align-items: flex-start;
+    flex-direction: row;
+    gap: 12px;
+  }
+
+  .post-item__actions {
+    margin-left: auto;
+  }
+
+  /* --- Idea item --- */
+  .idea-item {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .idea-item__main {
+    flex-wrap: wrap;
+  }
+
+  /* --- Calendario: celdas más pequeñas --- */
+  .calendar-cell {
+    min-height: 40px;
+    padding: 3px 4px;
+  }
+
+  .calendar-cell__day {
+    font-size: 0.75rem;
+  }
+
+  .calendar-dot {
+    width: 6px;
+    height: 6px;
+  }
+
+  .calendar-weekdays span {
+    font-size: 0.65rem;
+  }
+
+  .calendar-nav__title {
+    font-size: 0.95rem;
+    min-width: 140px;
+  }
+
+  /* --- Modal: ocupa toda la pantalla en mobile --- */
+  .modal {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .modal__body {
+    max-width: 100%;
+    width: 100%;
+    max-height: 92vh;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+
+  /* --- Toast: centrado abajo con margen para la barra de nav --- */
+  .toast {
+    bottom: 72px;
+    right: 16px;
+    left: 16px;
+    min-width: unset;
+    max-width: unset;
+  }
+
+  /* --- Sección header ("Ver todas") --- */
+  .section__header {
+    margin-top: -16px;
+  }
+
+  /* --- List items del dashboard --- */
+  .list-item {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .list-item__date {
+    min-width: unset;
+  }
+}
+
+/* =============================================
+   RESPONSIVE — Mobile pequeño (max 480px)
+============================================= */
+@media (max-width: 480px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .calendar-grid {
+    gap: 2px;
+  }
+
+  .calendar-cell {
+    min-height: 34px;
+    padding: 2px 3px;
+  }
+
+  .post-item__title,
+  .idea-item__title {
+    font-size: 0.88rem;
+  }
+}
