@@ -1176,17 +1176,18 @@ body {
     font-size: 1.8rem;
   }
 
-  /* --- Tabs: scroll horizontal --- */
+  /* --- Tabs: wrap en mobile para que se vean todos --- */
   .tabs {
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 4px;
+    overflow-x: visible;
+    flex-wrap: wrap;
+    gap: 6px;
   }
 
   .tab {
     white-space: nowrap;
     flex-shrink: 0;
+    font-size: 0.82rem;
+    padding: 6px 12px;
   }
 
   /* --- Post item: 2 filas en mobile --- */

@@ -162,8 +162,8 @@ function PostsPage() {
                 <span className="post-item__title">{p.title}</span>
               </div>
               <div className="post-item__meta">
-                <span className="post-item__platforms">{p.platforms.join(' \u00b7 ')}</span>
-                <span className="post-item__date">{p.scheduledDate ? formatDate(p.scheduledDate) : '\u2014'}</span>
+                <span className="post-item__platforms">{p.platforms.join(' · ')}</span>
+                <span className="post-item__date">{p.scheduledDate ? formatDate(p.scheduledDate) : '—'}</span>
               </div>
               <div className="post-item__actions">
                 {p.status !== 'published' && (
@@ -172,11 +172,11 @@ function PostsPage() {
                     onClick={() => handleAdvance(p.id)}
                     title={p.status === 'draft' ? 'Marcar como programado' : 'Marcar como publicado'}
                   >
-                    {p.status === 'draft' ? '\ud83d\udcc5' : '\u2705'}
+                    {p.status === 'draft' ? '📅' : '✅'}
                   </button>
                 )}
-                <button className="btn-icon" onClick={() => openEdit(p)} title="Editar">\u270f\ufe0f</button>
-                <button className="btn-icon" onClick={() => setConfirmDeleteId(p.id)} title="Eliminar">\ud83d\uddd1\ufe0f</button>
+                <button className="btn-icon" onClick={() => openEdit(p)} title="Editar">✏️</button>
+                <button className="btn-icon" onClick={() => setConfirmDeleteId(p.id)} title="Eliminar">🗑️</button>
               </div>
               <span className="post-item__title--mobile">{p.title}</span>
             </li>
