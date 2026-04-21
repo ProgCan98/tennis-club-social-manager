@@ -1074,11 +1074,13 @@ body {
     flex-direction: column;
   }
 
-  /* --- Layout: sin margen izquierdo --- */
+  /* --- Layout: sin margen izquierdo, footer siempre abajo --- */
   .layout {
     margin-left: 0;
     width: 100%;
     min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
   }
 
   /* --- Topbar: hamburguesa + título + acción --- */
@@ -1142,7 +1144,6 @@ body {
   .main-content {
     padding: 16px;
     gap: 16px;
-    flex: 0 0 auto;
   }
 
   .section {
@@ -1195,18 +1196,33 @@ body {
   /* --- Idea item --- */
   .idea-item {
     flex-wrap: wrap;
-    gap: 10px;
-    overflow: visible;
+    align-items: flex-start;
+    gap: 8px;
+    overflow: hidden;
   }
 
   .idea-item__main {
-    flex-wrap: wrap;
-    min-width: 0;
     flex: 1;
+    min-width: 0;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .idea-item__title {
+    width: 100%;
+    white-space: normal;
+    word-break: break-word;
   }
 
   .idea-item__actions {
     flex-shrink: 0;
+    margin-left: auto;
+  }
+
+  .idea-item__status,
+  .idea-item__priority {
+    font-size: 0.68rem;
+    padding: 2px 7px;
   }
 
   /* --- Calendario compacto --- */
