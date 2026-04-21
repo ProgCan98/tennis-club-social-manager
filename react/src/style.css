@@ -619,6 +619,11 @@ body {
   gap: 4px;
 }
 
+/* Título mobile — oculto en desktop, visible en mobile vía media query */
+.post-item__title--mobile {
+  display: none;
+}
+
 /* Badge de estado */
 .post-item__status {
   font-size: 0.72rem;
@@ -785,6 +790,11 @@ body {
 .idea-item__actions {
   display: flex;
   gap: 4px;
+}
+
+/* Título mobile — oculto en desktop, visible en mobile vía media query */
+.idea-item__title--mobile {
+  display: none;
 }
 
 /* Badge de status de idea */
@@ -1179,26 +1189,76 @@ body {
     flex-shrink: 0;
   }
 
-  /* --- Post item --- */
+  /* --- Post item: 2 filas en mobile --- */
   .post-item {
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 6px;
+    align-items: flex-start;
+  }
+
+  /* fila 1: badge + meta + acciones */
+  .post-item__main {
+    flex: none;
+    width: 100%;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .post-item__title {
+    display: none;
+  }
+
+  .post-item__title--mobile {
+    display: block;
+    font-size: 0.92rem;
+    font-weight: 600;
+    white-space: normal;
+    word-break: break-word;
+    width: 100%;
+    color: var(--color-text);
+    padding: 0 2px;
   }
 
   .post-item__meta {
     align-items: flex-start;
     flex-direction: row;
-    gap: 12px;
-  }
-
-  .post-item__actions {
+    gap: 8px;
     margin-left: auto;
   }
 
-  /* --- Idea item --- */
+  .post-item__actions {
+    flex-shrink: 0;
+  }
+
+  /* --- Idea item: 2 filas en mobile --- */
   .idea-item {
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: flex-start;
     overflow: hidden;
+  }
+
+  /* fila 1: badges + acciones */
+  .idea-item__main {
+    flex: none;
+    width: 100%;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .idea-item__title {
+    display: none;
+  }
+
+  .idea-item__title--mobile {
+    display: block;
+    font-size: 0.92rem;
+    font-weight: 600;
+    white-space: normal;
+    word-break: break-word;
+    width: 100%;
+    color: var(--color-text);
+    padding: 0 2px;
   }
 
   .idea-item__status,
@@ -1210,6 +1270,7 @@ body {
 
   .idea-item__actions {
     flex-shrink: 0;
+    margin-left: auto;
   }
 
   /* --- Calendario compacto --- */

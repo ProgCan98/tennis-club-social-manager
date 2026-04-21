@@ -161,12 +161,13 @@ function IdeasPage() {
                     onClick={() => setConfirmConvertId(i.id)}
                     title="Convertir en post"
                   >
-                    🔁
+                    \ud83d\udd01
                   </button>
                 )}
-                <button className="btn-icon" onClick={() => openEdit(i)} title="Editar">✏️</button>
-                <button className="btn-icon" onClick={() => setConfirmDeleteId(i.id)} title="Eliminar">🗑️</button>
+                <button className="btn-icon" onClick={() => openEdit(i)} title="Editar">\u270f\ufe0f</button>
+                <button className="btn-icon" onClick={() => setConfirmDeleteId(i.id)} title="Eliminar">\ud83d\uddd1\ufe0f</button>
               </div>
+              <span className="idea-item__title--mobile">{i.title}</span>
             </li>
           )) : (
             <li className="list-empty">No hay ideas para este filtro.</li>
