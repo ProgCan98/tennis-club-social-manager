@@ -778,6 +778,8 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
 }
 
 .idea-item__actions {
@@ -1195,34 +1197,19 @@ body {
 
   /* --- Idea item --- */
   .idea-item {
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: 8px;
+    gap: 10px;
     overflow: hidden;
-  }
-
-  .idea-item__main {
-    flex: 1;
-    min-width: 0;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-
-  .idea-item__title {
-    width: 100%;
-    white-space: normal;
-    word-break: break-word;
-  }
-
-  .idea-item__actions {
-    flex-shrink: 0;
-    margin-left: auto;
   }
 
   .idea-item__status,
   .idea-item__priority {
     font-size: 0.68rem;
     padding: 2px 7px;
+    flex-shrink: 0;
+  }
+
+  .idea-item__actions {
+    flex-shrink: 0;
   }
 
   /* --- Calendario compacto --- */
