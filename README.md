@@ -72,7 +72,7 @@ npx serve vanilla
 # Luego abrir http://localhost:3000
 ```
 
-### Versión React (en desarrollo)
+### Versión React
 
 ```bash
 cd react
@@ -232,7 +232,7 @@ tennis-club-social-manager/
 
 | #  | Tarea                                                              | Estado |
 | -- | ------------------------------------------------------------------ | ------ |
-| 47 | Extraer custom hooks: `useLocalStorage`, `usePosts`, `useIdeas`, `useEvents` | ✅ |
+| 47 | Extraer custom hooks: `usePosts`, `useIdeas`, `useEvents`, `useToast` | ✅ |
 | 48 | Verificar paridad funcional con la versión vanilla                 | ✅     |
 | 49 | Test manual del flujo completo en React                            | ✅     |
 
