@@ -1,33 +1,46 @@
 import { useState, useCallback } from 'react'
-import { Events } from '../lib/data'
+import { api } from '../lib/api'
 
-/**
- * useEvents
- * Encapsula el estado de la lista de eventos y las operaciones CRUD.
- * Llama a refresh() automáticamente después de cada mutación.
- *
- * Returns: { events, refresh, create, update, remove }
- */
 export default function useEvents() {
-  const [events, setEvents] = useState(() => Events.getAll())
+  const [events, setEvents]   = useState([])
+  const [loading, setLoading] = useState(false)
 
-  const refresh = useCallback(() => setEvents(Events.getAll()), [])
+  function normalize(row) {
+    return {
+      ...row,
+      date:      row.event_date ? row.event_date.split('T')[0] : null,
+      endDate:   row.end_date   ? row.end_date.split('T')[0]   : null,
+      type:      row.event_type,
+      createdAt: row.created_at,
+    }
+  }
 
-  const create = useCallback((values) => {
-    const event = Events.create(values)
-    refresh()
+  const refresh = useCallback(async (month = null) => {
+    setLoading(true)
+    try {
+      const path = month ? `/api/events?month=${month}` : '/api/events'
+      const data = await api.get(path)
+      setEvents(data.map(normalize))
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  const create = useCallback(async (values) => {
+    const event = await api.post('/api/events', values)
+    await refresh()
     return event
   }, [refresh])
 
-  const update = useCallback((id, values) => {
-    Events.update(id, values)
-    refresh()
+  const update = useCallback(async (id, values) => {
+    await api.put(`/api/events/${id}`, values)
+    await refresh()
   }, [refresh])
 
-  const remove = useCallback((id) => {
-    Events.remove(id)
-    refresh()
+  const remove = useCallback(async (id) => {
+    await api.delete(`/api/events/${id}`)
+    await refresh()
   }, [refresh])
 
-  return { events, refresh, create, update, remove }
+  return { events, loading, refresh, create, update, remove }
 }

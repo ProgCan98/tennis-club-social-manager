@@ -1,14 +1,41 @@
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Layout from '../components/Layout'
-import { Posts, Ideas, Events, formatDate } from '../lib/data'
+import usePosts from '../hooks/usePosts'
+import useIdeas from '../hooks/useIdeas'
+import useEvents from '../hooks/useEvents'
+import { formatDate } from '../lib/data'
 
 function DashboardPage() {
-  const postsThisMonth = Posts.getThisMonth()
-  const postsPending   = Posts.getPending()
-  const allIdeas       = Ideas.getAll()
-  const upcomingEvents = Events.getUpcoming()
-  const upcomingPosts  = Posts.getUpcoming()
-  const recentIdeas    = Ideas.getRecent()
+  const { posts,  refresh: refreshPosts  } = usePosts()
+  const { ideas,  refresh: refreshIdeas  } = useIdeas()
+  const { events, refresh: refreshEvents } = useEvents()
+
+  useEffect(() => {
+    refreshPosts()
+    refreshIdeas()
+    refreshEvents()
+  }, [refreshPosts, refreshIdeas, refreshEvents])
+
+  const today = new Date().toISOString().split('T')[0]
+  const thisMonth = today.slice(0, 7)
+
+  const postsThisMonth = posts.filter(p => p.scheduledDate && p.scheduledDate.startsWith(thisMonth))
+  const postsPending   = posts.filter(p => p.status === 'draft' || p.status === 'scheduled')
+  const upcomingPosts  = posts
+    .filter(p => p.scheduledDate && p.scheduledDate >= today)
+    .sort((a, b) => a.scheduledDate.localeCompare(b.scheduledDate))
+    .slice(0, 5)
+
+  const upcomingEvents = events
+    .filter(e => e.date && e.date >= today)
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .slice(0, 5)
+
+  const recentIdeas = ideas
+    .slice()
+    .sort((a, b) => (b.createdAt ?? '').localeCompare(a.createdAt ?? ''))
+    .slice(0, 5)
 
   return (
     <Layout title="Bienvenido 👋" activePage="dashboard">

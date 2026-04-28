@@ -1,33 +1,49 @@
 import { useState, useCallback } from 'react'
-import { Ideas } from '../lib/data'
+import { api } from '../lib/api'
 
-/**
- * useIdeas
- * Encapsula el estado de la lista de ideas y las operaciones CRUD.
- * Llama a refresh() automáticamente después de cada mutación.
- *
- * Returns: { ideas, refresh, create, update, remove }
- */
 export default function useIdeas() {
-  const [ideas, setIdeas] = useState(() => Ideas.getAll())
+  const [ideas, setIdeas]     = useState([])
+  const [loading, setLoading] = useState(false)
 
-  const refresh = useCallback(() => setIdeas(Ideas.getAll()), [])
+  function normalize(row) {
+    return {
+      ...row,
+      createdAt:       row.created_at,
+      convertedPostId: row.converted_post_id ?? null,
+    }
+  }
 
-  const create = useCallback((values) => {
-    const idea = Ideas.create(values)
-    refresh()
+  const refresh = useCallback(async () => {
+    setLoading(true)
+    try {
+      const data = await api.get('/api/ideas')
+      setIdeas(data.map(normalize))
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  const create = useCallback(async (values) => {
+    const idea = await api.post('/api/ideas', values)
+    await refresh()
     return idea
   }, [refresh])
 
-  const update = useCallback((id, values) => {
-    Ideas.update(id, values)
-    refresh()
+  const update = useCallback(async (id, values) => {
+    await api.put(`/api/ideas/${id}`, values)
+    await refresh()
   }, [refresh])
 
-  const remove = useCallback((id) => {
-    Ideas.remove(id)
-    refresh()
+  const remove = useCallback(async (id) => {
+    await api.delete(`/api/ideas/${id}`)
+    await refresh()
   }, [refresh])
 
-  return { ideas, refresh, create, update, remove }
+  const convert = useCallback(async (id) => {
+    const result = await api.put(`/api/ideas/${id}/convert`)
+    await refresh()
+    return result
+  }, [refresh])
+
+  return { ideas, loading, refresh, create, update, remove, convert }
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Layout from '../components/Layout'
 import Tabs from '../components/Tabs'
 import Modal from '../components/Modal'
@@ -6,7 +6,6 @@ import ConfirmDialog from '../components/ConfirmDialog'
 import Toast from '../components/Toast'
 import useToast from '../hooks/useToast'
 import useIdeas from '../hooks/useIdeas'
-import { Posts } from '../lib/data'
 
 const IDEA_STATUS_LABELS   = { nueva: 'Nueva', aprobada: 'Aprobada', descartada: 'Descartada', convertida: 'Convertida' }
 const IDEA_PRIORITY_LABELS = { alta: 'Alta', media: 'Media', baja: 'Baja' }
@@ -22,7 +21,9 @@ const ALL_TABS = [
 const EMPTY_FORM = { title: '', description: '', priority: 'alta', status: 'nueva', tags: '' }
 
 function IdeasPage() {
-  const { ideas, create: createIdea, update: updateIdea, remove: removeIdea } = useIdeas()
+  const { ideas, refresh, create: createIdea, update: updateIdea, remove: removeIdea, convert } = useIdeas()
+
+  useEffect(() => { refresh() }, [refresh])
   const [filter,           setFilter]           = useState('all')
   const [modalOpen,        setModalOpen]        = useState(false)
   const [editingIdea,      setEditingIdea]      = useState(null)
@@ -110,15 +111,7 @@ function IdeasPage() {
   function handleConvert() {
     const idea = ideas.find(i => i.id === confirmConvertId)
     if (!idea) { setConfirmConvertId(null); return }
-    const newPost = Posts.create({
-      title:         idea.title,
-      body:          idea.description,
-      status:        'draft',
-      platforms:     [],
-      scheduledDate: null,
-      tags:          idea.tags,
-    })
-    updateIdea(idea.id, { status: 'convertida', convertedPostId: newPost.id })
+    convert(idea.id)
     setConfirmConvertId(null)
     showToast('Idea convertida en borrador de post', 'success')
   }

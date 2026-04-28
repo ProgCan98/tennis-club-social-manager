@@ -1,11 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Layout from '../components/Layout'
 import Modal from '../components/Modal'
 import ConfirmDialog from '../components/ConfirmDialog'
 import Toast from '../components/Toast'
 import useToast from '../hooks/useToast'
 import useEvents from '../hooks/useEvents'
-import { Posts } from '../lib/data'
+import usePosts from '../hooks/usePosts'
 
 const MONTH_NAMES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
 const WEEKDAYS    = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb']
@@ -21,7 +21,10 @@ function CalendarPage() {
   const [year,           setYear]           = useState(now.getFullYear())
   const [month,          setMonth]          = useState(now.getMonth())
   const [selectedDate,   setSelectedDate]   = useState(null)
-  const { events, create: createEvent, update: updateEvent, remove: removeEvent } = useEvents()
+  const { events, refresh: refreshEvents, create: createEvent, update: updateEvent, remove: removeEvent } = useEvents()
+  const { posts: allPostsRaw, refresh: refreshPosts } = usePosts()
+
+  useEffect(() => { refreshEvents(); refreshPosts() }, [refreshEvents, refreshPosts])
   const [modalOpen,      setModalOpen]      = useState(false)
   const [editingEvent,   setEditingEvent]   = useState(null)
   const [form,           setForm]           = useState(EMPTY_FORM)
@@ -46,7 +49,7 @@ function CalendarPage() {
   const firstDay    = new Date(year, month, 1).getDay()
   const daysInMonth = new Date(year, month + 1, 0).getDate()
 
-  const allPosts = Posts.getAll().filter(p => p.scheduledDate)
+  const allPosts = allPostsRaw.filter(p => p.scheduledDate)
   const itemsByDate = {}
   events.forEach(e => {
     if (!itemsByDate[e.date]) itemsByDate[e.date] = []
@@ -63,7 +66,7 @@ function CalendarPage() {
 
   // --- Detalle del día ---
   const dayEvents = selectedDate ? events.filter(e => e.date === selectedDate) : []
-  const dayPosts  = selectedDate ? allPosts.filter(p => p.scheduledDate === selectedDate) : []
+  const dayPosts  = selectedDate ? allPostsRaw.filter(p => p.scheduledDate === selectedDate) : []
 
   function selectedDayLabel() {
     if (!selectedDate) return ''
@@ -107,9 +110,9 @@ function CalendarPage() {
   function buildValues() {
     return {
       title:       form.title.trim(),
-      date:        form.date,
-      endDate:     form.endDate || null,
-      type:        form.type,
+      event_date:  form.date,
+      end_date:    form.endDate || null,
+      event_type:  form.type,
       description: form.description.trim(),
     }
   }

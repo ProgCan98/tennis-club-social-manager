@@ -2,7 +2,7 @@
 
 Aplicación web para planificar y organizar la presencia en redes sociales de un club de tenis. Permite gestionar ideas de contenido, programar publicaciones, coordinar eventos del club y visualizar todo desde un dashboard centralizado.
 
-> **Estado del proyecto:** MVP vanilla ✅ — Migración a React ✅ — Backend API en desarrollo activo ⏳
+> **Estado del proyecto:** MVP vanilla ✅ — Migración a React ✅ — Backend API ✅ — Integración React → API en progreso ⏳
 
 > 🔗 **Demo en vivo:** [tennis-club-social-manager.vercel.app](https://tennis-club-social-manager.vercel.app/)
 
@@ -35,7 +35,7 @@ Además:
 | Persistencia  | `localStorage` (JSON)                  | `localStorage` (sin cambios) | PostgreSQL en Neon            |
 | Auth          | —                                      | —                            | JWT + bcryptjs                |
 | Build         | Ninguno                                | Vite                         | —                             |
-| Deploy        | —                                      | Vercel                       | Pendiente (Render / Railway)  |
+| Deploy        | —                                      | Vercel                       | Render / Railway              |
 
 ---
 
@@ -49,7 +49,10 @@ Además:
 - **Autenticación con JWT** — tokens firmados con `jsonwebtoken`, verificados por middleware `auth.js` en cada ruta protegida.
 - **Contraseñas con bcryptjs** — hash con salt rounds 10; nunca se almacena el texto plano.
 - **Sin ORM** — queries SQL directas con el driver `pg` para mantener control total y simplicidad.
-- **Soft delete en usuarios** — columna `deleted_at` en lugar de borrado físico, preservando integridad referencial.
+- **AuthContext** — contexto global que expone `user`, `login`, `register`, `logout`; inicializa la sesión desde `localStorage` al cargar la app.
+- **PrivateRoute** — componente que redirige a `/login` si no hay sesión activa, protegiendo todas las rutas de la app.
+- **Módulo `api.js`** — cliente HTTP centralizado con `fetch`; inyecta el Bearer token automáticamente y redirige a `/login` ante 401/403.
+- **`VITE_API_URL`** — variable de entorno que apunta al backend (Render en prod, `localhost:3001` en desarrollo).
 
 ---
 
@@ -116,14 +119,21 @@ tennis-club-social-manager/
 │   │   └── style.css            Reset, layout, componentes (modal, toast, tabs, items, calendar, forms)
 │   └── assets/
 │       └── icons/
-├── react/                       Nueva implementación con React + Vite
+├── react/                       Implementación React + Vite (integrada con la API)
 │   ├── src/
-│   │   ├── lib/                 Storage, seed y mock data como módulos JS
-│   │   ├── hooks/               usePosts, useIdeas, useEvents, useToast
+│   │   ├── context/
+│   │   │   └── AuthContext.jsx  Estado global de sesión (login/register/logout)
+│   │   ├── lib/
+│   │   │   ├── api.js           Cliente HTTP con Bearer token automático
+│   │   │   ├── auth.js          Helpers JWT: saveAuth, getToken, clearAuth
+│   │   │   ├── storage.js       (legacy) capa localStorage — pendiente remover
+│   │   │   ├── seed.js          (legacy) datos de ejemplo — pendiente remover
+│   │   │   └── data.js          (legacy) mock data — pendiente remover
+│   │   ├── hooks/               usePosts, useIdeas, useEvents, useToast (llaman a la API)
 │   │   ├── components/          Layout, Sidebar, Modal, Toast, Tabs, ConfirmDialog
-│   │   ├── pages/               DashboardPage, PostsPage, IdeasPage, CalendarPage
-│   │   ├── App.jsx              Rutas con React Router
-│   │   ├── main.jsx             Punto de entrada, seed inicial
+│   │   ├── pages/               DashboardPage, PostsPage, IdeasPage, CalendarPage, LoginPage
+│   │   ├── App.jsx              Rutas con React Router + PrivateRoute
+│   │   ├── main.jsx             Punto de entrada
 │   │   └── style.css            CSS migrado desde la versión vanilla
 │   ├── package.json         React 19, React Router, Vite
 │   └── vite.config.js       Configuración de build
@@ -156,8 +166,8 @@ tennis-club-social-manager/
 | 4    | Backlog de tareas                                | ✅     |
 | 5    | Implementación iterativa (vanilla)               | ✅     |
 | 6    | Migración a React + deploy en Vercel             | ✅     |
-| 7    | Backend API REST (Node.js + Express + PostgreSQL) | ⏳     |
-| 8    | Integración React → API (reemplazar localStorage) | ⬜     |
+| 7    | Backend API REST (Node.js + Express + PostgreSQL) | ✅     |
+| 8    | Integración React → API (reemplazar localStorage) | ⏳     |
 
 **Fuera del alcance del MVP:** Media (upload/galería) · Tasks (gestión de tareas) · Búsqueda global · Export/import · Dark mode
 
@@ -270,7 +280,7 @@ tennis-club-social-manager/
 </details>
 
 <details>
-<summary><strong>Fase 7 — Backlog backend API (9/18 completadas ⏳)</strong></summary>
+<summary><strong>Fase 7 — Backlog backend API (21/21 completadas ✅)</strong></summary>
 
 ### Sprint 10 — Setup + auth
 
@@ -290,56 +300,57 @@ tennis-club-social-manager/
 
 | #  | Tarea                                                              | Estado |
 | -- | ------------------------------------------------------------------ | ------ |
-| 59 | Crear tabla `posts` en PostgreSQL                                 | ⬜     |
-| 60 | `GET /api/posts` — listar todos los posts del usuario autenticado | ⬜     |
-| 61 | `POST /api/posts` — crear post nuevo                              | ⬜     |
-| 62 | `PUT /api/posts/:id` — editar post                                | ⬜     |
-| 63 | `DELETE /api/posts/:id` — eliminar post                           | ⬜     |
+| 59 | Crear tabla `posts` en PostgreSQL                                 | ✅     |
+| 60 | `GET /api/posts` — listar todos los posts (`?status=` para filtrar) | ✅   |
+| 61 | `POST /api/posts` — crear post nuevo                              | ✅     |
+| 62 | `PUT /api/posts/:id` — editar post                                | ✅     |
+| 63 | `DELETE /api/posts/:id` — soft delete (`deleted_at`)              | ✅     |
 
 ### Sprint 12 — CRUD Ideas y Events
 
 | #  | Tarea                                                              | Estado |
 | -- | ------------------------------------------------------------------ | ------ |
-| 64 | Crear tablas `ideas` y `events` en PostgreSQL                     | ⬜     |
-| 65 | CRUD completo `/api/ideas` (GET, POST, PUT, DELETE)               | ⬜     |
-| 66 | CRUD completo `/api/events` (GET, POST, PUT, DELETE)              | ⬜     |
-| 67 | Tests en Thunder Client: todos los endpoints CRUD                 | ⬜     |
+| 64 | Crear tablas `ideas` y `events` en PostgreSQL                     | ✅     |
+| 65 | CRUD completo `/api/ideas` (GET, POST, PUT, DELETE)               | ✅     |
+| 65b| `PUT /api/ideas/:id/convert` — convierte idea en borrador de post | ✅     |
+| 66 | CRUD completo `/api/events` (GET, POST, PUT, DELETE) + `?month=`  | ✅     |
+| 67 | Tests en Thunder Client: todos los endpoints CRUD                 | ✅     |
 
 ### Sprint 13 — Deploy API
 
 | #  | Tarea                                                              | Estado |
 | -- | ------------------------------------------------------------------ | ------ |
-| 68 | Deploy de la API en Render o Railway                              | ⬜     |
-| 69 | Configurar variables de entorno en el servicio de deploy          | ⬜     |
+| 68 | Deploy de la API en Render o Railway                              | ✅     |
+| 69 | Configurar variables de entorno en el servicio de deploy          | ✅     |
 
 </details>
 
 <details>
-<summary><strong>Fase 8 — Backlog integración React → API (0/10 completadas ⬜)</strong></summary>
+<summary><strong>Fase 8 — Backlog integración React → API (7/10 completadas ⏳)</strong></summary>
 
 ### Sprint 14 — Cliente HTTP
 
 | #  | Tarea                                                              | Estado |
 | -- | ------------------------------------------------------------------ | ------ |
-| 70 | Crear módulo `src/lib/api.js` con baseURL y header Authorization  | ⬜     |
-| 71 | Implementar login/register en React (pantalla o contexto de auth) | ⬜     |
-| 72 | Guardar JWT en `localStorage` / contexto global                   | ⬜     |
+| 70 | Crear módulo `src/lib/api.js` con baseURL y header Authorization  | ✅     |
+| 71 | Implementar `LoginPage` con tabs login/registro                   | ✅     |
+| 72 | Crear `AuthContext` (login, register, logout, isAuthenticated)     | ✅     |
 
 ### Sprint 15 — Reemplazar localStorage por API
 
 | #  | Tarea                                                              | Estado |
 | -- | ------------------------------------------------------------------ | ------ |
-| 73 | Actualizar `usePosts` para llamar a `/api/posts`                  | ⬜     |
-| 74 | Actualizar `useIdeas` para llamar a `/api/ideas`                  | ⬜     |
-| 75 | Actualizar `useEvents` para llamar a `/api/events`                | ⬜     |
-| 76 | Eliminar capa `Storage` y `seedIfEmpty()` (ya no es necesaria)    | ⬜     |
+| 73 | Actualizar `usePosts` para llamar a `/api/posts`                  | ✅     |
+| 74 | Actualizar `useIdeas` para llamar a `/api/ideas` + `/convert`     | ✅     |
+| 75 | Actualizar `useEvents` para llamar a `/api/events`                | ✅     |
+| 76 | Eliminar capa `Storage`, `seed.js` y `data.js` (ya no necesarios) | ⬜     |
 
 ### Sprint 16 — Pulido final
 
 | #  | Tarea                                                              | Estado |
 | -- | ------------------------------------------------------------------ | ------ |
 | 77 | Manejo de errores HTTP (401, 404, 500) en la UI                   | ⬜     |
-| 78 | Loading states mientras la API responde                           | ⬜     |
+| 78 | Loading states mientras la API responde                           | ✅     |
 | 79 | Test manual del flujo completo con DB real                        | ⬜     |
 
 </details>

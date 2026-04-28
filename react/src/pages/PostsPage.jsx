@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Layout from '../components/Layout'
 import Tabs from '../components/Tabs'
 import Modal from '../components/Modal'
@@ -23,7 +23,9 @@ const ALL_TABS = [
 const EMPTY_FORM = { title: '', body: '', platforms: [], status: 'draft', scheduledDate: '', tags: '' }
 
 function PostsPage() {
-  const { posts, create: createPost, update: updatePost, remove: removePost } = usePosts()
+  const { posts, refresh, create: createPost, update: updatePost, remove: removePost } = usePosts()
+
+  useEffect(() => { refresh() }, [refresh])
   const [filter,          setFilter]          = useState('all')
   const [modalOpen,       setModalOpen]       = useState(false)
   const [editingPost,     setEditingPost]     = useState(null)
@@ -96,12 +98,12 @@ function PostsPage() {
 
   function buildValues() {
     return {
-      title:         form.title.trim(),
-      body:          form.body.trim(),
-      platforms:     form.platforms,
-      status:        form.status,
-      scheduledDate: form.scheduledDate || null,
-      tags:          form.tags.split(',').map(t => t.trim()).filter(Boolean),
+      title:          form.title.trim(),
+      body:           form.body.trim(),
+      platforms:      form.platforms,
+      status:         form.status,
+      scheduled_date: form.scheduledDate || null,
+      tags:           form.tags.split(',').map(t => t.trim()).filter(Boolean),
     }
   }
 

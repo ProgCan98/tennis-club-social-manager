@@ -1,9 +1,12 @@
 const { Pool } = require('pg')      // Pool maneja múltiples conexiones simultáneas
 require('dotenv').config()           // Carga las variables del archivo .env
 
+// Separa la DATABASE_URL del parámetro sslmode para evitar conflicto con pg v8
+const connectionString = process.env.DATABASE_URL?.replace('?sslmode=require', '')
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,  // URL completa de Neon
-  ssl: { rejectUnauthorized: false },           // Neon requiere SSL obligatorio
+  connectionString,
+  ssl: { rejectUnauthorized: false },  // Acepta el certificado de Neon sin verificar CA
 })
 
 // Función helper: ejecuta una query y devuelve las filas
