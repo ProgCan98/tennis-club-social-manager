@@ -98,12 +98,12 @@ function PostsPage() {
 
   function buildValues() {
     return {
-      title:          form.title.trim(),
-      body:           form.body.trim(),
-      platforms:      form.platforms,
-      status:         form.status,
-      scheduled_date: form.scheduledDate || null,
-      tags:           form.tags.split(',').map(t => t.trim()).filter(Boolean),
+      title:         form.title.trim(),
+      body:          form.body.trim(),
+      platforms:     form.platforms,
+      status:        form.status,
+      scheduledDate: form.scheduledDate || null,
+      tags:          form.tags.split(',').map(t => t.trim()).filter(Boolean),
     }
   }
 

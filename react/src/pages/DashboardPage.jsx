@@ -26,12 +26,10 @@ function DashboardPage() {
     .filter(p => p.scheduledDate && p.scheduledDate >= today)
     .sort((a, b) => a.scheduledDate.localeCompare(b.scheduledDate))
     .slice(0, 5)
-
   const upcomingEvents = events
     .filter(e => e.date && e.date >= today)
     .sort((a, b) => a.date.localeCompare(b.date))
     .slice(0, 5)
-
   const recentIdeas = ideas
     .slice()
     .sort((a, b) => (b.createdAt ?? '').localeCompare(a.createdAt ?? ''))
@@ -54,7 +52,7 @@ function DashboardPage() {
           </article>
           <article className="card card--stat">
             <h3 className="card__label">Ideas guardadas</h3>
-            <p className="card__value">{allIdeas.length}</p>
+            <p className="card__value">{ideas.length}</p>
           </article>
           <article className="card card--stat">
             <h3 className="card__label">Próximos eventos</h3>
@@ -74,7 +72,7 @@ function DashboardPage() {
             <li key={p.id} className="list-item">
               <span className="list-item__date">{formatDate(p.scheduledDate)}</span>
               <span className="list-item__title">{p.title}</span>
-              <span className="list-item__platforms">{p.platforms.join(' · ')}</span>
+              <span className="list-item__platforms">{(p.platforms ?? []).join(' · ')}</span>
             </li>
           )) : (
             <li className="posts-list__empty">No hay publicaciones programadas.</li>

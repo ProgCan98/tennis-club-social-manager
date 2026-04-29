@@ -110,9 +110,9 @@ function CalendarPage() {
   function buildValues() {
     return {
       title:       form.title.trim(),
-      event_date:  form.date,
-      end_date:    form.endDate || null,
-      event_type:  form.type,
+      date:        form.date,
+      endDate:     form.endDate || null,
+      type:        form.type,
       description: form.description.trim(),
     }
   }
