@@ -6,7 +6,7 @@ import ConfirmDialog from '../components/ConfirmDialog'
 import Toast from '../components/Toast'
 import useToast from '../hooks/useToast'
 import usePosts from '../hooks/usePosts'
-import { formatDate } from '../lib/data'
+import { formatDate } from '../lib/utils'
 
 const STATUS_LABELS        = { draft: 'Borrador', scheduled: 'Programado', published: 'Publicado' }
 const STATUS_NEXT          = { draft: 'scheduled', scheduled: 'published' }
@@ -23,7 +23,7 @@ const ALL_TABS = [
 const EMPTY_FORM = { title: '', body: '', platforms: [], status: 'draft', scheduledDate: '', tags: '' }
 
 function PostsPage() {
-  const { posts, refresh, create: createPost, update: updatePost, remove: removePost } = usePosts()
+  const { posts, loading, refresh, create: createPost, update: updatePost, remove: removePost } = usePosts()
 
   useEffect(() => { refresh() }, [refresh])
   const [filter,          setFilter]          = useState('all')
@@ -98,12 +98,12 @@ function PostsPage() {
 
   function buildValues() {
     return {
-      title:         form.title.trim(),
-      body:          form.body.trim(),
-      platforms:     form.platforms,
-      status:        form.status,
-      scheduledDate: form.scheduledDate || null,
-      tags:          form.tags.split(',').map(t => t.trim()).filter(Boolean),
+      title:          form.title.trim(),
+      body:           form.body.trim(),
+      platforms:      form.platforms,
+      status:         form.status,
+      scheduled_date: form.scheduledDate || null,
+      tags:           form.tags.split(',').map(t => t.trim()).filter(Boolean),
     }
   }
 
@@ -154,6 +154,9 @@ function PostsPage() {
         <h2 id="posts-heading" className="section__title">
           Listado <span className="count-badge">{filtered.length}</span>
         </h2>
+        {loading ? (
+          <p className="loading-text">Cargando...</p>
+        ) : (
         <ul className="posts-full-list">
           {filtered.length ? filtered.map(p => (
             <li key={p.id} className="post-item">
@@ -186,6 +189,7 @@ function PostsPage() {
             <li className="list-empty">No hay publicaciones para este filtro.</li>
           )}
         </ul>
+        )}
       </section>
 
       {/* Modal formulario */}

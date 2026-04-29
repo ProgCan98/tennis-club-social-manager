@@ -2,7 +2,7 @@
 
 Aplicación web para planificar y organizar la presencia en redes sociales de un club de tenis. Permite gestionar ideas de contenido, programar publicaciones, coordinar eventos del club y visualizar todo desde un dashboard centralizado.
 
-> **Estado del proyecto:** MVP vanilla ✅ — Migración a React ✅ — Backend API ✅ — Integración React → API en progreso ⏳
+> **Estado del proyecto:** MVP vanilla ✅ — Migración a React ✅ — Backend API ✅ — Integración React → API ✅
 
 > 🔗 **Demo en vivo:** [tennis-club-social-manager.vercel.app](https://tennis-club-social-manager.vercel.app/)
 
@@ -52,7 +52,7 @@ Además:
 - **AuthContext** — contexto global que expone `user`, `login`, `register`, `logout`; inicializa la sesión desde `localStorage` al cargar la app.
 - **PrivateRoute** — componente que redirige a `/login` si no hay sesión activa, protegiendo todas las rutas de la app.
 - **Módulo `api.js`** — cliente HTTP centralizado con `fetch`; inyecta el Bearer token automáticamente y redirige a `/login` ante 401/403.
-- **`VITE_API_URL`** — variable de entorno que apunta al backend (Render en prod, `localhost:3001` en desarrollo).
+- **`utils.js`** — helpers puros sin dependencias (`formatDate`); reemplaza a `data.js` que fue eliminado junto con `storage.js` y `seed.js` al completar la migración a la API.
 
 ---
 
@@ -126,9 +126,7 @@ tennis-club-social-manager/
 │   │   ├── lib/
 │   │   │   ├── api.js           Cliente HTTP con Bearer token automático
 │   │   │   ├── auth.js          Helpers JWT: saveAuth, getToken, clearAuth
-│   │   │   ├── storage.js       (legacy) capa localStorage — pendiente remover
-│   │   │   ├── seed.js          (legacy) datos de ejemplo — pendiente remover
-│   │   │   └── data.js          (legacy) mock data — pendiente remover
+│   │   │   └── utils.js         Helpers puros: formatDate
 │   │   ├── hooks/               usePosts, useIdeas, useEvents, useToast (llaman a la API)
 │   │   ├── components/          Layout, Sidebar, Modal, Toast, Tabs, ConfirmDialog
 │   │   ├── pages/               DashboardPage, PostsPage, IdeasPage, CalendarPage, LoginPage
@@ -136,7 +134,8 @@ tennis-club-social-manager/
 │   │   ├── main.jsx             Punto de entrada
 │   │   └── style.css            CSS migrado desde la versión vanilla
 │   ├── package.json         React 19, React Router, Vite
-│   └── vite.config.js       Configuración de build
+│   ├── vite.config.js       Configuración de build
+│   └── vercel.json          SPA rewrites para React Router en Vercel
 ├── api/                         Backend API REST (Node.js + Express + PostgreSQL)
 │   ├── index.js                 Servidor Express, rutas montadas, error handler
 │   ├── src/
@@ -167,7 +166,7 @@ tennis-club-social-manager/
 | 5    | Implementación iterativa (vanilla)               | ✅     |
 | 6    | Migración a React + deploy en Vercel             | ✅     |
 | 7    | Backend API REST (Node.js + Express + PostgreSQL) | ✅     |
-| 8    | Integración React → API (reemplazar localStorage) | ⏳     |
+| 8    | Integración React → API (reemplazar localStorage) | ✅     |
 
 **Fuera del alcance del MVP:** Media (upload/galería) · Tasks (gestión de tareas) · Búsqueda global · Export/import · Dark mode
 
@@ -326,7 +325,7 @@ tennis-club-social-manager/
 </details>
 
 <details>
-<summary><strong>Fase 8 — Backlog integración React → API (7/10 completadas ⏳)</strong></summary>
+<summary><strong>Fase 8 — Backlog integración React → API (10/10 completadas ✅)</strong></summary>
 
 ### Sprint 14 — Cliente HTTP
 
@@ -343,15 +342,15 @@ tennis-club-social-manager/
 | 73 | Actualizar `usePosts` para llamar a `/api/posts`                  | ✅     |
 | 74 | Actualizar `useIdeas` para llamar a `/api/ideas` + `/convert`     | ✅     |
 | 75 | Actualizar `useEvents` para llamar a `/api/events`                | ✅     |
-| 76 | Eliminar capa `Storage`, `seed.js` y `data.js` (ya no necesarios) | ⬜     |
+| 76 | Eliminar `storage.js`, `seed.js`, `data.js`; extraer helpers a `utils.js` | ✅ |
 
 ### Sprint 16 — Pulido final
 
 | #  | Tarea                                                              | Estado |
 | -- | ------------------------------------------------------------------ | ------ |
-| 77 | Manejo de errores HTTP (401, 404, 500) en la UI                   | ⬜     |
+| 77 | Manejo de errores HTTP (401, 404, 500) en la UI                   | ✅     |
 | 78 | Loading states mientras la API responde                           | ✅     |
-| 79 | Test manual del flujo completo con DB real                        | ⬜     |
+| 79 | Test manual del flujo completo con DB real + deploy verificado    | ✅     |
 
 </details>
 

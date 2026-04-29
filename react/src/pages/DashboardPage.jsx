@@ -4,7 +4,7 @@ import Layout from '../components/Layout'
 import usePosts from '../hooks/usePosts'
 import useIdeas from '../hooks/useIdeas'
 import useEvents from '../hooks/useEvents'
-import { formatDate } from '../lib/data'
+import { formatDate } from '../lib/utils'
 
 function DashboardPage() {
   const { posts,  refresh: refreshPosts  } = usePosts()

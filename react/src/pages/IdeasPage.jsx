@@ -21,7 +21,7 @@ const ALL_TABS = [
 const EMPTY_FORM = { title: '', description: '', priority: 'alta', status: 'nueva', tags: '' }
 
 function IdeasPage() {
-  const { ideas, refresh, create: createIdea, update: updateIdea, remove: removeIdea, convert } = useIdeas()
+  const { ideas, loading, refresh, create: createIdea, update: updateIdea, remove: removeIdea, convert } = useIdeas()
 
   useEffect(() => { refresh() }, [refresh])
   const [filter,           setFilter]           = useState('all')
@@ -135,6 +135,9 @@ function IdeasPage() {
         <h2 id="ideas-heading" className="section__title">
           Listado <span className="count-badge">{filtered.length}</span>
         </h2>
+        {loading ? (
+          <p className="loading-text">Cargando...</p>
+        ) : (
         <ul className="ideas-full-list">
           {filtered.length ? filtered.map(i => (
             <li key={i.id} className="idea-item">
@@ -166,6 +169,7 @@ function IdeasPage() {
             <li className="list-empty">No hay ideas para este filtro.</li>
           )}
         </ul>
+        )}
       </section>
 
       {/* Modal formulario */}
