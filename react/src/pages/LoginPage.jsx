@@ -113,6 +113,13 @@ export default function LoginPage() {
           </button>
         </form>
 
+        {/* Credenciales de demo */}
+        {!isRegister && (
+          <div className="login-card__demo">
+            <p>🎾 <strong>Demo:</strong> admin@tennis.com / admin123</p>
+          </div>
+        )}
+
       </div>
     </div>
   )

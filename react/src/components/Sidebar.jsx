@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 const NAV_ITEMS = [
   { page: 'dashboard', path: '/',         icon: '📊', label: 'Dashboard'     },
@@ -16,6 +17,7 @@ const NAV_ITEMS = [
  *   onClose    (function) — callback para cerrar el drawer
  */
 function Sidebar({ activePage, isOpen, onClose }) {
+  const { user, logout } = useAuth()
   // Cierra el drawer con Escape
   useEffect(() => {
     if (!isOpen) return
@@ -53,6 +55,14 @@ function Sidebar({ activePage, isOpen, onClose }) {
             ))}
           </ul>
         </nav>
+
+        {/* Usuario y logout al fondo del sidebar */}
+        <div className="sidebar__footer">
+          {user && <p className="sidebar__user">{user.name ?? user.email}</p>}
+          <button className="sidebar__logout" onClick={logout}>
+            <span aria-hidden="true">🚪</span> Cerrar sesión
+          </button>
+        </div>
       </aside>
     </>
   )
