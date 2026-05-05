@@ -88,24 +88,33 @@ function IdeasPage() {
     }
   }
 
-  function handleSave() {
+  async function handleSave() {
     const error = validateForm()
     if (error) { showToast(error, 'warning'); return }
     const values = buildValues()
-    if (editingIdea) {
-      updateIdea(editingIdea.id, values)
-      showToast('Idea actualizada', 'success')
-    } else {
-      createIdea(values)
-      showToast('Idea creada', 'success')
+    try {
+      if (editingIdea) {
+        await updateIdea(editingIdea.id, values)
+        showToast('Idea actualizada', 'success')
+      } else {
+        await createIdea(values)
+        showToast('Idea creada', 'success')
+      }
+      closeModal()
+    } catch (err) {
+      showToast(err.message || 'Error al guardar', 'warning')
     }
-    closeModal()
   }
 
-  function handleDelete() {
-    removeIdea(confirmDeleteId)
-    setConfirmDeleteId(null)
-    showToast('Idea eliminada', 'info')
+  async function handleDelete() {
+    try {
+      await removeIdea(confirmDeleteId)
+      showToast('Idea eliminada', 'info')
+    } catch (err) {
+      showToast(err.message || 'Error al eliminar', 'warning')
+    } finally {
+      setConfirmDeleteId(null)
+    }
   }
 
   function handleConvert() {

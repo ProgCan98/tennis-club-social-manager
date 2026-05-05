@@ -107,27 +107,42 @@ function PostsPage() {
     }
   }
 
-  function handleSave() {
+  async function handleSave() {
     const error = validateForm()
     if (error) { showToast(error, 'warning'); return }
     const values = buildValues()
-    if (editingPost) {
-      updatePost(editingPost.id, values)
-      showToast('Publicación actualizada', 'success')
-    } else {
-      createPost(values)
-      showToast('Publicación creada', 'success')
+    try {
+      if (editingPost) {
+        await updatePost(editingPost.id, values)
+        showToast('Publicación actualizada', 'success')
+      } else {
+        await createPost(values)
+        showToast('Publicación creada', 'success')
+      }
+      closeModal()
+    } catch (err) {
+      showToast(err.message || 'Error al guardar', 'warning')
     }
-    closeModal()
   }
 
-  function handleAdvance(id) {
+  async function handleAdvance(id) {
     const post = posts.find(p => p.id === id)
     if (!post) return
     const next = STATUS_NEXT[post.status]
     if (!next) return
-    updatePost(id, { ...post, status: next })
-    showToast(`Publicación marcada como ${STATUS_ADVANCE_LABELS[post.status]}`, 'success')
+    try {
+      await updatePost(id, {
+        title:          post.title,
+        body:           post.body,
+        platforms:      post.platforms,
+        status:         next,
+        scheduled_date: post.scheduledDate || null,
+        tags:           post.tags,
+      })
+      showToast(`Publicación marcada como ${STATUS_ADVANCE_LABELS[post.status]}`, 'success')
+    } catch (err) {
+      showToast(err.message || 'Error al actualizar', 'warning')
+    }
   }
 
   function handleDelete() {

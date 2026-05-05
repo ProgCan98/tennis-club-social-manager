@@ -115,23 +115,32 @@ function CalendarPage() {
       description: form.description.trim(),
     }
   }
-  function handleSave() {
+  async function handleSave() {
     const error = validateForm()
     if (error) { showToast(error, 'warning'); return }
     const values = buildValues()
-    if (editingEvent) {
-      updateEvent(editingEvent.id, values)
-      showToast('Evento actualizado', 'success')
-    } else {
-      createEvent(values)
-      showToast('Evento creado', 'success')
+    try {
+      if (editingEvent) {
+        await updateEvent(editingEvent.id, values)
+        showToast('Evento actualizado', 'success')
+      } else {
+        await createEvent(values)
+        showToast('Evento creado', 'success')
+      }
+      closeModal()
+    } catch (err) {
+      showToast(err.message || 'Error al guardar', 'warning')
     }
-    closeModal()
   }
-  function handleDelete() {
-    removeEvent(confirmDeleteId)
-    setConfirmDeleteId(null)
-    showToast('Evento eliminado', 'info')
+  async function handleDelete() {
+    try {
+      await removeEvent(confirmDeleteId)
+      showToast('Evento eliminado', 'info')
+    } catch (err) {
+      showToast(err.message || 'Error al eliminar', 'warning')
+    } finally {
+      setConfirmDeleteId(null)
+    }
   }
 
   const confirmEvent = events.find(e => e.id === confirmDeleteId)
