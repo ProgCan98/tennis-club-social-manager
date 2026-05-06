@@ -57,12 +57,12 @@ function PostsPage() {
 
   function openEdit(post) {
     setForm({
-      title:         post.title,
-      body:          post.body,
-      platforms:     post.platforms,
+      title:         post.title  ?? '',
+      body:          post.body   ?? '',
+      platforms:     post.platforms   ?? [],
       status:        post.status,
       scheduledDate: post.scheduledDate ?? '',
-      tags:          post.tags.join(', '),
+      tags:          Array.isArray(post.tags) ? post.tags.join(', ') : (post.tags ?? ''),
     })
     setEditingPost(post)
     setErrorFieldId(null)
@@ -91,15 +91,15 @@ function PostsPage() {
   }
 
   function validateForm() {
-    if (!form.title.trim())     { setErrorFieldId('f-title');           return 'El título es obligatorio.' }
+    if (!(form.title ?? '').trim()) { setErrorFieldId('f-title');           return 'El título es obligatorio.' }
     if (!form.platforms.length) { setErrorFieldId('f-platforms-group'); return 'Seleccioná al menos una plataforma.' }
     return null
   }
 
   function buildValues() {
     return {
-      title:          form.title.trim(),
-      body:           form.body.trim(),
+      title:          (form.title ?? '').trim(),
+      body:           (form.body  ?? '').trim(),
       platforms:      form.platforms,
       status:         form.status,
       scheduled_date: form.scheduledDate || null,
@@ -134,10 +134,10 @@ function PostsPage() {
       await updatePost(id, {
         title:          post.title,
         body:           post.body,
-        platforms:      post.platforms,
+        platforms:      post.platforms ?? [],
         status:         next,
         scheduled_date: post.scheduledDate || null,
-        tags:           post.tags,
+        tags:           Array.isArray(post.tags) ? post.tags : [],
       })
       showToast(`Publicación marcada como ${STATUS_ADVANCE_LABELS[post.status]}`, 'success')
     } catch (err) {

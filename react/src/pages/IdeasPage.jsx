@@ -51,11 +51,11 @@ function IdeasPage() {
 
   function openEdit(idea) {
     setForm({
-      title:       idea.title,
-      description: idea.description,
+      title:       idea.title       ?? '',
+      description: idea.description ?? '',
       priority:    idea.priority,
       status:      idea.status,
-      tags:        idea.tags.join(', '),
+      tags:        Array.isArray(idea.tags) ? idea.tags.join(', ') : (idea.tags ?? ''),
     })
     setEditingIdea(idea)
     setErrorFieldId(null)
@@ -74,14 +74,14 @@ function IdeasPage() {
   }
 
   function validateForm() {
-    if (!form.title.trim()) { setErrorFieldId('f-idea-title'); return 'El título es obligatorio.' }
+    if (!(form.title ?? '').trim()) { setErrorFieldId('f-idea-title'); return 'El título es obligatorio.' }
     return null
   }
 
   function buildValues() {
     return {
-      title:       form.title.trim(),
-      description: form.description.trim(),
+      title:       (form.title       ?? '').trim(),
+      description: (form.description ?? '').trim(),
       priority:    form.priority,
       status:      form.status,
       tags:        form.tags.split(',').map(t => t.trim()).filter(Boolean),
