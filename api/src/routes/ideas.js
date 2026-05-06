@@ -1,6 +1,7 @@
 const express   = require('express')
 const { query } = require('../db')
 const auth      = require('../middleware/auth')
+const checkRole = require('../middleware/checkRole')
 
 const router = express.Router()
 
@@ -68,7 +69,7 @@ router.post('/', async (req, res) => {
 
 // ── PUT /api/ideas/:id ────────────────────────────────────────────────────────
 // Edita campos generales de una idea
-router.put('/:id', async (req, res) => {
+router.put('/:id', checkRole(['admin']), async (req, res) => {
   const { title, description, priority, status, tags } = req.body
 
   const existing = await query(
@@ -102,7 +103,7 @@ router.put('/:id', async (req, res) => {
 // ── PUT /api/ideas/:id/convert ────────────────────────────────────────────────
 // Convierte una idea en un borrador de post
 // Crea el post y actualiza el status de la idea a 'convertida'
-router.put('/:id/convert', async (req, res) => {
+router.put('/:id/convert', checkRole(['admin']), async (req, res) => {
   // Busca la idea del usuario
   const ideaResult = await query(
     'SELECT * FROM ideas WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL',
@@ -143,7 +144,7 @@ router.put('/:id/convert', async (req, res) => {
 
 // ── DELETE /api/ideas/:id ─────────────────────────────────────────────────────
 // Borrado lógico
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', checkRole(['admin']), async (req, res) => {
   const existing = await query(
     'SELECT id FROM ideas WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL',
     [req.params.id, req.user.userId]

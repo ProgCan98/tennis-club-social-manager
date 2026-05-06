@@ -1,6 +1,7 @@
 const express    = require('express')
 const { query }  = require('../db')          // Conexión a Neon
 const auth       = require('../middleware/auth') // Middleware JWT
+const checkRole  = require('../middleware/checkRole')
 
 const router = express.Router()
 
@@ -47,7 +48,7 @@ router.get('/:id', async (req, res) => {
 
 // ── POST /api/posts ───────────────────────────────────────────────────────────
 // Crea un nuevo post
-router.post('/', async (req, res) => {
+router.post('/', checkRole(['admin']), async (req, res) => {
   const { title, body, status, platforms, scheduled_date, tags } = req.body
 
   if (!title) {
@@ -77,7 +78,7 @@ router.post('/', async (req, res) => {
 
 // ── PUT /api/posts/:id ────────────────────────────────────────────────────────
 // Edita un post existente del usuario logueado
-router.put('/:id', async (req, res) => {
+router.put('/:id', checkRole(['admin']), async (req, res) => {
   const { title, body, status, platforms, scheduled_date, tags } = req.body
 
   // Verifica que el post exista y pertenezca al usuario
@@ -112,7 +113,7 @@ router.put('/:id', async (req, res) => {
 
 // ── DELETE /api/posts/:id ─────────────────────────────────────────────────────
 // Borrado LÓGICO: setea deleted_at en lugar de eliminar el registro
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', checkRole(['admin']), async (req, res) => {
   const existing = await query(
     'SELECT id FROM posts WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL',
     [req.params.id, req.user.userId]

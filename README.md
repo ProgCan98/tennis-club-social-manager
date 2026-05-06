@@ -2,7 +2,7 @@
 
 Aplicación web para planificar y organizar la presencia en redes sociales de un club de tenis. Permite gestionar ideas de contenido, programar publicaciones, coordinar eventos del club y visualizar todo desde un dashboard centralizado.
 
-> **Estado del proyecto:** MVP vanilla ✅ — Migración a React ✅ — Backend API ✅ — Integración React → API ✅
+> **Estado del proyecto:** MVP vanilla ✅ — Migración a React ✅ — Backend API ✅ — Integración React → API ✅ — QA completo ✅
 
 > 🔗 **Demo en vivo:** [tennis-club-social-manager.vercel.app](https://tennis-club-social-manager.vercel.app/)
 
@@ -325,7 +325,7 @@ tennis-club-social-manager/
 </details>
 
 <details>
-<summary><strong>Fase 8 — Backlog integración React → API (10/10 completadas ✅)</strong></summary>
+<summary><strong>Fase 8 — Backlog integración React → API (13/13 completadas ✅)</strong></summary>
 
 ### Sprint 14 — Cliente HTTP
 
@@ -351,6 +351,14 @@ tennis-club-social-manager/
 | 77 | Manejo de errores HTTP (401, 404, 500) en la UI                   | ✅     |
 | 78 | Loading states mientras la API responde                           | ✅     |
 | 79 | Test manual del flujo completo con DB real + deploy verificado    | ✅     |
+
+### Sprint 17 — QA y bugfixes
+
+| #  | Tarea                                                              | Estado |
+| -- | ------------------------------------------------------------------ | ------ |
+| 80 | Fix: construcción de objetos en modal (Posts, Ideas, Calendar)     | ✅     |
+| 81 | Fix: relación de datos DB ↔ modal en `IdeasPage` y `PostsPage`    | ✅     |
+| 82 | Fix: bug en `usePosts` detectado durante pruebas de `useEvents`   | ✅     |
 
 </details>
 

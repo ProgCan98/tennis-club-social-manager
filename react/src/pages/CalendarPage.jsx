@@ -6,6 +6,7 @@ import Toast from '../components/Toast'
 import useToast from '../hooks/useToast'
 import useEvents from '../hooks/useEvents'
 import usePosts from '../hooks/usePosts'
+import { useAuth } from '../context/AuthContext'
 
 const MONTH_NAMES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
 const WEEKDAYS    = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb']
@@ -18,6 +19,8 @@ const EMPTY_FORM = { title: '', date: '', endDate: '', type: 'torneo', descripti
 
 function CalendarPage() {
   const now = new Date()
+  const { user } = useAuth()
+  const isAdmin = user?.role === 'admin'
   const [year,           setYear]           = useState(now.getFullYear())
   const [month,          setMonth]          = useState(now.getMonth())
   const [selectedDate,   setSelectedDate]   = useState(null)
@@ -149,7 +152,7 @@ function CalendarPage() {
     <Layout
       title="Calendario"
       activePage="calendar"
-      actions={<button className="btn btn--primary" onClick={openNew}>+ Nuevo evento</button>}
+      actions={isAdmin && <button className="btn btn--primary" onClick={openNew}>+ Nuevo evento</button>}
     >
       {/* Grilla mensual */}
       <section className="section calendar-section">
@@ -221,10 +224,12 @@ function CalendarPage() {
                       <strong>{e.title}</strong>
                       <span>{EVENT_TYPE_LABELS[e.type] ?? e.type}{e.description ? ` — ${e.description}` : ''}</span>
                     </div>
-                    <div className="day-detail-item__actions">
-                      <button className="btn-icon" onClick={() => openEdit(e)} title="Editar">&#9998;</button>
-                      <button className="btn-icon" onClick={() => setConfirmDeleteId(e.id)} title="Eliminar">&#128465;</button>
-                    </div>
+                    {isAdmin && (
+                      <div className="day-detail-item__actions">
+                        <button className="btn-icon" onClick={() => openEdit(e)} title="Editar">&#9998;</button>
+                        <button className="btn-icon" onClick={() => setConfirmDeleteId(e.id)} title="Eliminar">&#128465;</button>
+                      </div>
+                    )}
                   </li>
                 ))}
                 {dayPosts.map(p => (

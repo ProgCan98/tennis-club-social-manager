@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 const NAV_ITEMS = [
-  { page: 'dashboard', path: '/',         icon: '📊', label: 'Dashboard'     },
-  { page: 'posts',     path: '/posts',     icon: '📝', label: 'Publicaciones' },
-  { page: 'ideas',     path: '/ideas',     icon: '💡', label: 'Ideas'         },
-  { page: 'calendar',  path: '/calendar',  icon: '📅', label: 'Calendario'    },
+  { page: 'dashboard', path: '/',         icon: '📊', label: 'Dashboard',     roles: ['admin'] },
+  { page: 'posts',     path: '/posts',     icon: '📝', label: 'Publicaciones', roles: ['admin'] },
+  { page: 'ideas',     path: '/ideas',     icon: '💡', label: 'Ideas',         roles: ['admin'] },
+  { page: 'calendar',  path: '/calendar',  icon: '📅', label: 'Calendario',    roles: ['admin', 'viewer'] },
 ]
 
 /**
@@ -18,6 +18,7 @@ const NAV_ITEMS = [
  */
 function Sidebar({ activePage, isOpen, onClose }) {
   const { user, logout } = useAuth()
+  const role = user?.role ?? 'viewer'
   // Cierra el drawer con Escape
   useEffect(() => {
     if (!isOpen) return
@@ -42,7 +43,7 @@ function Sidebar({ activePage, isOpen, onClose }) {
         </div>
         <nav className="sidebar__nav">
           <ul className="nav__list">
-            {NAV_ITEMS.map(item => (
+            {NAV_ITEMS.filter(item => item.roles.includes(role)).map(item => (
               <li
                 key={item.page}
                 className={`nav__item${activePage === item.page ? ' nav__item--active' : ''}`}
@@ -58,7 +59,12 @@ function Sidebar({ activePage, isOpen, onClose }) {
 
         {/* Usuario y logout al fondo del sidebar */}
         <div className="sidebar__footer">
-          {user && <p className="sidebar__user">{user.name ?? user.email}</p>}
+          {user && (
+            <p className="sidebar__user">
+              {user.name ?? user.email}
+              {role === 'viewer' && <span className="sidebar__role-badge">Visor</span>}
+            </p>
+          )}
           <button className="sidebar__logout" onClick={logout}>
             <span aria-hidden="true">🚪</span> Cerrar sesión
           </button>

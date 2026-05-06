@@ -6,33 +6,46 @@ import IdeasPage     from './pages/IdeasPage'
 import CalendarPage  from './pages/CalendarPage'
 import LoginPage     from './pages/LoginPage'
 
-// Componente que protege rutas: si no hay sesión redirige a /login
-function PrivateRoute({ children }) {
-  const { isAuthenticated } = useAuth()
-  return isAuthenticated ? children : <Navigate to="/login" replace />
+// Requiere sesión activa; si no hay sesión → /login
+// Si hay sesión pero el rol no está permitido → redirige según rol
+function PrivateRoute({ children, allowedRoles }) {
+  const { isAuthenticated, user } = useAuth()
+  if (!isAuthenticated) return <Navigate to="/login" replace />
+  if (allowedRoles && !allowedRoles.includes(user?.role)) {
+    return <Navigate to="/calendar" replace />
+  }
+  return children
 }
 
 function AppRoutes() {
+  const { user } = useAuth()
+
   return (
     <Routes>
       {/* Ruta pública */}
       <Route path="/login" element={<LoginPage />} />
 
-      {/* Rutas protegidas */}
-      <Route path="/"         element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
-      <Route path="/posts"    element={<PrivateRoute><PostsPage /></PrivateRoute>} />
-      <Route path="/ideas"    element={<PrivateRoute><IdeasPage /></PrivateRoute>} />
+      {/* Solo ADMIN */}
+      <Route path="/"      element={<PrivateRoute allowedRoles={['admin']}><DashboardPage /></PrivateRoute>} />
+      <Route path="/posts" element={<PrivateRoute allowedRoles={['admin']}><PostsPage /></PrivateRoute>} />
+      <Route path="/ideas" element={<PrivateRoute allowedRoles={['admin']}><IdeasPage /></PrivateRoute>} />
+
+      {/* Todos los roles autenticados */}
       <Route path="/calendar" element={<PrivateRoute><CalendarPage /></PrivateRoute>} />
 
-      {/* Cualquier ruta desconocida → dashboard */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      {/* Ruta raíz: admin → dashboard, viewer → calendar */}
+      <Route
+        path="*"
+        element={
+          <Navigate to={user?.role === 'viewer' ? '/calendar' : '/'} replace />
+        }
+      />
     </Routes>
   )
 }
 
 function App() {
   return (
-    // AuthProvider envuelve toda la app para que useAuth() funcione en cualquier componente
     <AuthProvider>
       <BrowserRouter>
         <AppRoutes />

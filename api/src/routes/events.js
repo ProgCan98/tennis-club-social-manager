@@ -1,6 +1,7 @@
 const express   = require('express')
 const { query } = require('../db')
 const auth      = require('../middleware/auth')
+const checkRole = require('../middleware/checkRole')
 
 const router = express.Router()
 
@@ -44,7 +45,7 @@ router.get('/:id', async (req, res) => {
 })
 
 // ── POST /api/events ──────────────────────────────────────────────────────────
-router.post('/', async (req, res) => {
+router.post('/', checkRole(['admin']), async (req, res) => {
   const { title, description, event_type, event_date } = req.body
 
   if (!title) {
@@ -71,7 +72,7 @@ router.post('/', async (req, res) => {
 })
 
 // ── PUT /api/events/:id ───────────────────────────────────────────────────────
-router.put('/:id', async (req, res) => {
+router.put('/:id', checkRole(['admin']), async (req, res) => {
   const { title, description, event_type, event_date } = req.body
 
   const existing = await query(
@@ -103,7 +104,7 @@ router.put('/:id', async (req, res) => {
 
 // ── DELETE /api/events/:id ────────────────────────────────────────────────────
 // Borrado lógico
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', checkRole(['admin']), async (req, res) => {
   const existing = await query(
     'SELECT id FROM events WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL',
     [req.params.id, req.user.userId]
