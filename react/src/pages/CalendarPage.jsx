@@ -14,6 +14,7 @@ const WEEKDAYS    = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb']
 const EVENT_TYPE_LABELS = { torneo: 'Torneo', clase: 'Clase', social: 'Social', feriado: 'Feriado', otro: 'Otro' }
 const EVENT_TYPE_COLORS = { torneo: '#c62828', clase: '#1565c0', social: '#2e7d32', feriado: '#f57f17', otro: '#6b7280' }
 const POST_COLOR        = '#9c27b0'
+const POST_STATUS_LABELS = { draft: 'Borrador', scheduled: 'Programado', published: 'Publicado' }
 
 const EMPTY_FORM = { title: '', date: '', endDate: '', type: 'torneo', description: '' }
 
@@ -372,7 +373,7 @@ function CalendarPage() {
               <strong className="detail-modal__title">{detailItem.title}</strong>
             </div>
             <div className="detail-modal__meta">
-              <span><strong>Estado:</strong> {detailItem.status}</span>
+              <span><strong>Estado:</strong> {POST_STATUS_LABELS[detailItem.status] ?? detailItem.status}</span>
               <span><strong>Plataformas:</strong> {detailItem.platforms?.join(', ')}</span>
               {detailItem.scheduledDate && <span><strong>Fecha:</strong> {detailItem.scheduledDate}</span>}
               {detailItem.tags?.length > 0 && <span><strong>Tags:</strong> {detailItem.tags.join(', ')}</span>}

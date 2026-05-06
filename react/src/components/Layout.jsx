@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import Sidebar from './Sidebar'
 import { useAuth } from '../context/AuthContext'
+import { useTheme } from '../context/ThemeContext'
 
 /**
  * Layout
@@ -12,6 +13,7 @@ import { useAuth } from '../context/AuthContext'
  */
 function Layout({ title, activePage, actions, children }) {
   const { user, logout } = useAuth()
+  const { dark, toggleTheme } = useTheme()
   const isViewer = user?.role === 'viewer'
   const [currentDate,  setCurrentDate]  = useState('')
   const [sidebarOpen,  setSidebarOpen]  = useState(false)
@@ -70,6 +72,9 @@ function Layout({ title, activePage, actions, children }) {
           {isViewer && (
             <div className="topbar__viewer-controls">
               <span className="topbar__viewer-name">{user?.name ?? user?.email}</span>
+              <button className="btn--icon-only" onClick={toggleTheme} title={dark ? 'Modo claro' : 'Modo oscuro'}>
+                {dark ? '☀️' : '🌙'}
+              </button>
               <button className="btn btn--secondary btn--sm" onClick={logout}>Cerrar sesión</button>
             </div>
           )}

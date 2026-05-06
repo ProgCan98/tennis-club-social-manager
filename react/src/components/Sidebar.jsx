@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useTheme } from '../context/ThemeContext'
 
 const NAV_ITEMS = [
   { page: 'dashboard', path: '/',         icon: '📊', label: 'Dashboard',     roles: ['admin'] },
@@ -18,6 +19,7 @@ const NAV_ITEMS = [
  */
 function Sidebar({ activePage, isOpen, onClose }) {
   const { user, logout } = useAuth()
+  const { dark, toggleTheme } = useTheme()
   const role = user?.role ?? 'viewer'
   // Cierra el drawer con Escape
   useEffect(() => {
@@ -65,6 +67,10 @@ function Sidebar({ activePage, isOpen, onClose }) {
               {role === 'viewer' && <span className="sidebar__role-badge">Visor</span>}
             </p>
           )}
+          <button className="sidebar__theme-btn" onClick={toggleTheme}>
+            <span aria-hidden="true">{dark ? '☀️' : '🌙'}</span>
+            {dark ? 'Modo claro' : 'Modo oscuro'}
+          </button>
           <button className="sidebar__logout" onClick={logout}>
             <span aria-hidden="true">🚪</span> Cerrar sesión
           </button>
