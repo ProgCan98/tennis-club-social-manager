@@ -1681,6 +1681,11 @@ body {
   margin-bottom: 12px;
 }
 
+[data-theme="dark"] .login-card__error {
+  background: #7f1d1d;
+  color: #fca5a5;
+}
+
 .login-card__submit {
   width: 100%;
   margin-top: 8px;
@@ -1697,4 +1702,34 @@ body {
   font-size: 0.82rem;
   color: var(--color-text-muted);
   text-align: center;
+}
+
+.login-card__demo p + p {
+  margin-top: 4px;
+}
+
+[data-theme="dark"] .login-card__demo {
+  background: #14532d;
+  border-color: #166534;
+  color: var(--color-text-muted);
+}
+
+/* Botón flotante de tema en la página de login */
+.login-theme-btn {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  z-index: 10;
+  transition: background 0.2s;
+}
+
+.login-theme-btn:hover {
+  background: var(--color-bg);
 }

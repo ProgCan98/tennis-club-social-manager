@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useTheme } from '../context/ThemeContext'
 
 export default function LoginPage() {
   const { login, register }     = useAuth()
+  const { dark, toggleTheme }   = useTheme()
   const navigate                = useNavigate()
   const [isRegister, setIsRegister] = useState(false)  // Alterna entre login y registro
   const [form, setForm]         = useState({ name: '', email: '', password: '' })
@@ -35,6 +37,16 @@ export default function LoginPage() {
 
   return (
     <div className="login-page">
+      {/* Botón de tema flotante arriba a la derecha */}
+      <button
+        className="login-theme-btn"
+        onClick={toggleTheme}
+        title={dark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+        aria-label="Cambiar tema"
+      >
+        {dark ? '☀️' : '🌙'}
+      </button>
+
       <div className="login-card">
 
         {/* Logo / título */}
