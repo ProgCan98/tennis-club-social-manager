@@ -9,7 +9,7 @@ export default function usePosts() {
   function normalize(row) {
     return {
       ...row,
-      scheduledDate: row.scheduled_date ?? null,
+      scheduledDate: row.scheduled_date ? row.scheduled_date.split('T')[0] : null,
       createdAt:     row.created_at,
     }
   }
