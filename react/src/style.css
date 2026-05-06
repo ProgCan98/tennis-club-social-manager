@@ -178,6 +178,42 @@ body {
   overflow-x: hidden;
 }
 
+/* Viewer no tiene sidebar — ocupa todo el ancho */
+.layout--viewer {
+  margin-left: 0;
+}
+
+/* =============================================
+   TOPBAR VIEWER CONTROLS
+============================================= */
+.topbar__viewer-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.topbar__viewer-name {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.btn--sm {
+  padding: 6px 12px;
+  font-size: 0.82rem;
+}
+
+.btn--secondary {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.btn--secondary:hover {
+  background: var(--color-bg);
+}
+
 /* =============================================
    TOPBAR
 ============================================= */
@@ -1040,6 +1076,54 @@ body {
 .day-detail-item__actions {
   display: flex;
   gap: 4px;
+}
+
+.day-detail-item:hover {
+  background: var(--color-bg);
+}
+
+/* =============================================
+   DETAIL MODAL
+============================================= */
+.detail-modal__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.detail-modal__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.detail-modal__title {
+  font-size: 1.05rem;
+}
+
+.detail-modal__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  margin-bottom: 12px;
+}
+
+.detail-modal__meta strong {
+  color: var(--color-text);
+}
+
+.detail-modal__desc {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--color-text);
+  white-space: pre-wrap;
+  border-top: 1px solid var(--color-border);
+  padding-top: 12px;
+  margin-top: 4px;
 }
 
 @keyframes fadeInOverlay {

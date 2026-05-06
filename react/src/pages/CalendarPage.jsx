@@ -33,6 +33,7 @@ function CalendarPage() {
   const [form,           setForm]           = useState(EMPTY_FORM)
   const [errorFieldId,   setErrorFieldId]   = useState(null)
   const [confirmDeleteId, setConfirmDeleteId] = useState(null)
+  const [detailItem,      setDetailItem]      = useState(null)
   const { toast, showToast, hideToast }     = useToast()
 
   // --- Navegación de meses ---
@@ -218,7 +219,7 @@ function CalendarPage() {
             ) : (
               <>
                 {dayEvents.map(e => (
-                  <li key={e.id} className="day-detail-item day-detail-item--event">
+                  <li key={e.id} className="day-detail-item day-detail-item--event" onClick={() => setDetailItem({ ...e, _kind: 'event' })} style={{ cursor: 'pointer' }}>
                     <span className="day-detail-item__dot" style={{ background: EVENT_TYPE_COLORS[e.type] ?? '#6b7280' }} />
                     <div className="day-detail-item__body">
                       <strong>{e.title}</strong>
@@ -226,18 +227,18 @@ function CalendarPage() {
                     </div>
                     {isAdmin && (
                       <div className="day-detail-item__actions">
-                        <button className="btn-icon" onClick={() => openEdit(e)} title="Editar">&#9998;</button>
-                        <button className="btn-icon" onClick={() => setConfirmDeleteId(e.id)} title="Eliminar">&#128465;</button>
+                        <button className="btn-icon" onClick={ev => { ev.stopPropagation(); openEdit(e) }} title="Editar">&#9998;</button>
+                        <button className="btn-icon" onClick={ev => { ev.stopPropagation(); setConfirmDeleteId(e.id) }} title="Eliminar">&#128465;</button>
                       </div>
                     )}
                   </li>
                 ))}
                 {dayPosts.map(p => (
-                  <li key={p.id} className="day-detail-item day-detail-item--post">
+                  <li key={p.id} className="day-detail-item day-detail-item--post" onClick={() => setDetailItem({ ...p, _kind: 'post' })} style={{ cursor: 'pointer' }}>
                     <span className="day-detail-item__dot" style={{ background: POST_COLOR }} />
                     <div className="day-detail-item__body">
                       <strong>{p.title}</strong>
-                      <span>{p.platforms.join(' · ')}</span>
+                      <span>{p.platforms?.join(' · ')}</span>
                     </div>
                   </li>
                 ))}
@@ -333,6 +334,55 @@ function CalendarPage() {
         onConfirm={handleDelete}
         onCancel={() => setConfirmDeleteId(null)}
       />
+
+      {/* Modal de detalle (solo lectura) */}
+      <Modal
+        isOpen={!!detailItem}
+        title={detailItem?._kind === 'event' ? 'Detalle del evento' : 'Detalle de publicación'}
+        onClose={() => setDetailItem(null)}
+        footer={
+          <>
+            {isAdmin && detailItem?._kind === 'event' && (
+              <button className="btn btn--secondary" onClick={() => { openEdit(detailItem); setDetailItem(null) }}>Editar</button>
+            )}
+            <button className="btn btn--primary" onClick={() => setDetailItem(null)}>Cerrar</button>
+          </>
+        }
+      >
+        {detailItem?._kind === 'event' && (
+          <div className="detail-modal">
+            <div className="detail-modal__row">
+              <span className="detail-modal__dot" style={{ background: EVENT_TYPE_COLORS[detailItem.type] ?? '#6b7280' }} />
+              <strong className="detail-modal__title">{detailItem.title}</strong>
+            </div>
+            <div className="detail-modal__meta">
+              <span><strong>Tipo:</strong> {EVENT_TYPE_LABELS[detailItem.type] ?? detailItem.type}</span>
+              <span><strong>Fecha:</strong> {detailItem.date}</span>
+              {detailItem.endDate && <span><strong>Hasta:</strong> {detailItem.endDate}</span>}
+            </div>
+            {detailItem.description && (
+              <p className="detail-modal__desc">{detailItem.description}</p>
+            )}
+          </div>
+        )}
+        {detailItem?._kind === 'post' && (
+          <div className="detail-modal">
+            <div className="detail-modal__row">
+              <span className="detail-modal__dot" style={{ background: POST_COLOR }} />
+              <strong className="detail-modal__title">{detailItem.title}</strong>
+            </div>
+            <div className="detail-modal__meta">
+              <span><strong>Estado:</strong> {detailItem.status}</span>
+              <span><strong>Plataformas:</strong> {detailItem.platforms?.join(', ')}</span>
+              {detailItem.scheduledDate && <span><strong>Fecha:</strong> {detailItem.scheduledDate}</span>}
+              {detailItem.tags?.length > 0 && <span><strong>Tags:</strong> {detailItem.tags.join(', ')}</span>}
+            </div>
+            {detailItem.body && (
+              <p className="detail-modal__desc">{detailItem.body}</p>
+            )}
+          </div>
+        )}
+      </Modal>
 
       <Toast {...toast} onHide={hideToast} />
     </Layout>

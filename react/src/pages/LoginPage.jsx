@@ -116,7 +116,8 @@ export default function LoginPage() {
         {/* Credenciales de demo */}
         {!isRegister && (
           <div className="login-card__demo">
-            <p>🎾 <strong>Demo:</strong> Usuario: admin@tennis.com / Contraseña: 123456</p>
+            <p>🎾 <strong>Admin:</strong> admin@tennis.com / 123456</p>
+            <p>👁️ <strong>Visor:</strong> franco@tennis.com / 123456</p>
           </div>
         )}
 

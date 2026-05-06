@@ -13,11 +13,10 @@ router.use(auth)
 // Acepta query param ?status=draft|scheduled|published para filtrar
 router.get('/', async (req, res) => {
   const { status } = req.query         // Filtro opcional por status
-  const userId = req.user.userId       // ID del usuario extraído del token
 
   let text = `SELECT * FROM posts
-              WHERE user_id = $1 AND deleted_at IS NULL`
-  const params = [userId]
+              WHERE deleted_at IS NULL`
+  const params = []
 
   // Si viene filtro de status lo agrega dinámicamente
   if (status) {

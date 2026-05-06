@@ -12,11 +12,10 @@ router.use(auth)
 // Filtra por ?month=2026-05 para traer solo los de un mes específico
 router.get('/', async (req, res) => {
   const { month } = req.query   // Formato esperado: '2026-05'
-  const userId = req.user.userId
 
   let text = `SELECT * FROM events
-              WHERE user_id = $1 AND deleted_at IS NULL`
-  const params = [userId]
+              WHERE deleted_at IS NULL`
+  const params = []
 
   // Si viene el filtro de mes, filtra con DATE_TRUNC
   if (month) {
