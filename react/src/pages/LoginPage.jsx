@@ -51,9 +51,9 @@ export default function LoginPage() {
 
         {/* Logo / título */}
         <div className="login-card__header">
-          <img src="/Logo_mini.png" alt="Tennis Club logo" className="login-card__logo" />
-          <h1 className="login-card__title">Tennis Club</h1>
-          <p className="login-card__subtitle">Social Manager</p>
+          <img src="/Logo_mini_MarcaAgua.png" alt="Tennis Club logo" className="login-card__logo" />
+          <h1 className="login-card__title">La Falda</h1>
+          <p className="login-card__subtitle">Club de Campo · Social Manager</p>
         </div>
 
         {/* Tabs login / registro */}

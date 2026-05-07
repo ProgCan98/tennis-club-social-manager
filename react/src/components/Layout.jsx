@@ -71,7 +71,7 @@ function Layout({ title, activePage, actions, children }) {
           {/* Logout en topbar — solo para viewer */}
           {isViewer && (
             <div className="topbar__viewer-controls">
-              <img src="/Logo_mini.png" alt="Tennis Club logo" className="topbar__logo" />
+              <img src="/Logo_mini_MarcaAgua.png" alt="Tennis Club logo" className="topbar__logo" />
               <span className="topbar__viewer-name">{user?.name ?? user?.email}</span>
               <button className="btn--icon-only" onClick={toggleTheme} title={dark ? 'Modo claro' : 'Modo oscuro'}>
                 {dark ? '☀️' : '🌙'}

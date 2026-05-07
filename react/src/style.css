@@ -77,17 +77,32 @@ body {
 
 .sidebar__brand {
   padding: 0 24px 24px;
+  padding-top: 16px;
   border-bottom: 1px solid rgba(255,255,255,0.15);
   text-align: center;
+  overflow: visible; /* Permite que el logo sobresalga hacia arriba */
+  position: relative;
 }
 
+/* Wrapper que da espacio para que la pelota sobresalga */
+.sidebar__logo-wrap {
+  position: relative;
+  width: 72px;
+  height: 80px; /* Extra 16px arriba para la pelota */
+  margin: 0 auto 6px;
+}
+
+/* Logo con fondo transparente (nuevo PNG con pelota saliendo del círculo) */
 .sidebar__logo {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 10px;
-  border: 2px solid rgba(255,255,255,0.3);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 72px;
+  height: 80px;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.35));
+  /* border-radius removido: el PNG transparente define su propia forma */
 }
 
 .sidebar__title {
