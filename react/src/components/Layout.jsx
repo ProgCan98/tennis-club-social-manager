@@ -60,8 +60,13 @@ function Layout({ title, activePage, actions, children }) {
           )}
 
           <div className="topbar__greeting">
-            <h2 className="topbar__title">{title}</h2>
-            <p className="topbar__date">{currentDate}</p>
+            {isViewer && (
+              <img src="/Logo_mini_MarcaAgua.png" alt="La Falda logo" className="topbar__logo topbar__logo--left" />
+            )}
+            <div>
+              <h2 className="topbar__title">{title}</h2>
+              <p className="topbar__date">{currentDate}</p>
+            </div>
           </div>
 
           {actions && (
@@ -71,7 +76,6 @@ function Layout({ title, activePage, actions, children }) {
           {/* Logout en topbar — solo para viewer */}
           {isViewer && (
             <div className="topbar__viewer-controls">
-              <img src="/Logo_mini_MarcaAgua.png" alt="Tennis Club logo" className="topbar__logo" />
               <span className="topbar__viewer-name">{user?.name ?? user?.email}</span>
               <button className="btn--icon-only" onClick={toggleTheme} title={dark ? 'Modo claro' : 'Modo oscuro'}>
                 {dark ? '☀️' : '🌙'}
