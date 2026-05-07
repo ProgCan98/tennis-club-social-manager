@@ -51,7 +51,8 @@ export default function LoginPage() {
 
         {/* Logo / título */}
         <div className="login-card__header">
-          <h1 className="login-card__title">🎾 Tennis Club</h1>
+          <img src="/Logo_mini.png" alt="Tennis Club logo" className="login-card__logo" />
+          <h1 className="login-card__title">Tennis Club</h1>
           <p className="login-card__subtitle">Social Manager</p>
         </div>
 

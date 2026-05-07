@@ -82,9 +82,12 @@ body {
 }
 
 .sidebar__logo {
-  width: 48px;
-  height: 48px;
-  margin-bottom: 8px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+  border: 2px solid rgba(255,255,255,0.3);
 }
 
 .sidebar__title {
@@ -247,6 +250,14 @@ body {
   align-items: center;
   gap: 12px;
   margin-left: auto;
+}
+
+.topbar__logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-border);
 }
 
 .topbar__viewer-name {
@@ -1633,6 +1644,16 @@ body {
 .login-card__header {
   text-align: center;
   margin-bottom: 28px;
+}
+
+.login-card__logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 12px;
+  border: 3px solid var(--color-primary);
+  box-shadow: 0 2px 12px rgba(46,125,50,0.2);
 }
 
 .login-card__title {

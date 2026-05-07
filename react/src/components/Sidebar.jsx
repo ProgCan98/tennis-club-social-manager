@@ -38,6 +38,7 @@ function Sidebar({ activePage, isOpen, onClose }) {
 
       <aside className={`sidebar${isOpen ? ' sidebar--open' : ''}`}>
         <div className="sidebar__brand">
+          <img src="/Logo_mini.png" alt="Tennis Club logo" className="sidebar__logo" />
           <p className="sidebar__title">Tennis Club</p>
           <p className="sidebar__subtitle">Social Manager</p>
           {/* Botón X para cerrar el drawer en mobile */}
