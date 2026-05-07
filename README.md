@@ -2,7 +2,7 @@
 
 Aplicación web para planificar y organizar la presencia en redes sociales de un club de tenis. Permite gestionar ideas de contenido, programar publicaciones, coordinar eventos del club y visualizar todo desde un dashboard centralizado.
 
-> **Estado del proyecto:** MVP vanilla ✅ — Migración a React ✅ — Backend API ✅ — Integración React → API ✅ — QA completo ✅
+> **Estado del proyecto:** MVP vanilla ✅ — Migración a React ✅ — Backend API ✅ — Integración React → API ✅ — QA ✅ — RBAC + Dark mode ✅
 
 > 🔗 **Demo en vivo:** [tennis-club-social-manager.vercel.app](https://tennis-club-social-manager.vercel.app/)
 
@@ -15,11 +15,13 @@ Aplicación web para planificar y organizar la presencia en redes sociales de un
 | **Dashboard**   | KPIs en tiempo real (posts del mes, pendientes, ideas, eventos) + resúmenes  |
 | **Publicaciones** | CRUD completo con estados (borrador → programado → publicado), filtros por status y soporte multi-plataforma |
 | **Ideas**       | Banco de ideas con prioridades, filtros por estado y conversión directa a post |
-| **Calendario**  | Vista mensual con eventos y posts programados, panel de detalle por día       |
+| **Calendario**  | Vista mensual con eventos y posts programados, panel de detalle por día, filtro por mes |
 
 Además:
-- Datos de ejemplo precargados automáticamente en el primer uso
-- Navegación dinámica con sidebar compartido generado por JS
+- Autenticación completa (login / registro) con sesión persistente via JWT
+- Control de acceso por rol: `admin` puede crear/editar/eliminar; `viewer` solo lectura
+- Modo oscuro / claro persistente (toggle en sidebar, respeta preferencia guardada)
+- Navegación dinámica con sidebar compartido
 - Modales y toasts reutilizables para CRUD y feedback visual
 
 ---
@@ -52,7 +54,8 @@ Además:
 - **AuthContext** — contexto global que expone `user`, `login`, `register`, `logout`; inicializa la sesión desde `localStorage` al cargar la app.
 - **PrivateRoute** — componente que redirige a `/login` si no hay sesión activa, protegiendo todas las rutas de la app.
 - **Módulo `api.js`** — cliente HTTP centralizado con `fetch`; inyecta el Bearer token automáticamente y redirige a `/login` ante 401/403.
-- **`utils.js`** — helpers puros sin dependencias (`formatDate`); reemplaza a `data.js` que fue eliminado junto con `storage.js` y `seed.js` al completar la migración a la API.
+- **RBAC (admin/viewer)** — middleware `checkRole` en las rutas de escritura; el frontend oculta controles de edición según el rol del usuario autenticado.
+- **Dark mode** — `ThemeContext` aplica `data-theme` en `<html>` vía CSS custom properties; preferencia persistida en `localStorage`.
 
 ---
 
@@ -122,7 +125,8 @@ tennis-club-social-manager/
 ├── react/                       Implementación React + Vite (integrada con la API)
 │   ├── src/
 │   │   ├── context/
-│   │   │   └── AuthContext.jsx  Estado global de sesión (login/register/logout)
+│   │   │   ├── AuthContext.jsx  Estado global de sesión (login/register/logout)
+│   │   │   └── ThemeContext.jsx Toggle dark/light mode, persiste en localStorage
 │   │   ├── lib/
 │   │   │   ├── api.js           Cliente HTTP con Bearer token automático
 │   │   │   ├── auth.js          Helpers JWT: saveAuth, getToken, clearAuth
@@ -141,7 +145,8 @@ tennis-club-social-manager/
 │   ├── src/
 │   │   ├── db.js                Conexión a PostgreSQL (Neon) via pg
 │   │   ├── middleware/
-│   │   │   └── auth.js          Middleware JWT (verifica Bearer token)
+│   │   │   ├── auth.js          Middleware JWT (verifica Bearer token)
+│   │   │   └── checkRole.js     Middleware RBAC (verifica rol del usuario)
 │   │   └── routes/
 │   │       ├── users.js         POST /register · POST /login
 │   │       ├── posts.js         CRUD /api/posts
@@ -167,6 +172,7 @@ tennis-club-social-manager/
 | 6    | Migración a React + deploy en Vercel             | ✅     |
 | 7    | Backend API REST (Node.js + Express + PostgreSQL) | ✅     |
 | 8    | Integración React → API (reemplazar localStorage) | ✅     |
+| 9    | RBAC, dark mode y mejoras de UX                   | ✅     |
 
 **Fuera del alcance del MVP:** Media (upload/galería) · Tasks (gestión de tareas) · Búsqueda global · Export/import · Dark mode
 
@@ -359,6 +365,26 @@ tennis-club-social-manager/
 | 80 | Fix: construcción de objetos en modal (Posts, Ideas, Calendar)     | ✅     |
 | 81 | Fix: relación de datos DB ↔ modal en `IdeasPage` y `PostsPage`    | ✅     |
 | 82 | Fix: bug en `usePosts` detectado durante pruebas de `useEvents`   | ✅     |
+
+</details>
+
+<details>
+<summary><strong>Fase 9 — Backlog mejoras post-QA (5/5 completadas ✅)</strong></summary>
+
+### Sprint 18 — RBAC
+
+| #  | Tarea                                                                      | Estado |
+| -- | -------------------------------------------------------------------------- | ------ |
+| 83 | Crear middleware `checkRole.js` en la API                                  | ✅     |
+| 84 | Proteger rutas de escritura (POST/PUT/DELETE) con `checkRole(['admin'])`   | ✅     |
+| 85 | Ocultar controles de edición en el frontend según rol del usuario         | ✅     |
+
+### Sprint 19 — Dark mode y UX
+
+| #  | Tarea                                                                      | Estado |
+| -- | -------------------------------------------------------------------------- | ------ |
+| 86 | Crear `ThemeContext` con toggle dark/light y persistencia en localStorage  | ✅     |
+| 87 | Aplicar tema en `LoginPage` y ajustar estilos de login/registro            | ✅     |
 
 </details>
 
