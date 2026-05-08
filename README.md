@@ -2,7 +2,7 @@
 
 Aplicación web para planificar y organizar la presencia en redes sociales de un club de tenis. Permite gestionar ideas de contenido, programar publicaciones, coordinar eventos del club y visualizar todo desde un dashboard centralizado.
 
-> **Estado del proyecto:** MVP vanilla ✅ — Migración a React ✅ — Backend API ✅ — Integración React → API ✅ — QA ✅ — RBAC + Dark mode ✅
+> **Estado del proyecto:** MVP vanilla ✅ — Migración a React ✅ — Backend API ✅ — Integración React → API ✅ — QA ✅ — RBAC + Dark mode ✅ — Logo + seguridad auth ✅
 
 > 🔗 **Demo en vivo:** [tennis-club-social-manager.vercel.app](https://tennis-club-social-manager.vercel.app/)
 
@@ -173,8 +173,9 @@ tennis-club-social-manager/
 | 7    | Backend API REST (Node.js + Express + PostgreSQL) | ✅     |
 | 8    | Integración React → API (reemplazar localStorage) | ✅     |
 | 9    | RBAC, dark mode y mejoras de UX                   | ✅     |
+| 10   | Logo, branding y hardening del middleware auth    | ✅     |
 
-**Fuera del alcance del MVP:** Media (upload/galería) · Tasks (gestión de tareas) · Búsqueda global · Export/import · Dark mode
+**Fuera del alcance del MVP:** Media (upload/galería) · Tasks (gestión de tareas) · Búsqueda global · Export/import
 
 ---
 
@@ -388,9 +389,24 @@ tennis-club-social-manager/
 
 </details>
 
----
+<details>
+<summary><strong>Fase 10 — Backlog logo, branding y hardening (4/4 completadas ✅)</strong></summary>
 
-## Documentación técnica
+### Sprint 20 — Logo y branding
+
+| #  | Tarea                                                                        | Estado |
+| -- | ---------------------------------------------------------------------------- | ------ |
+| 88 | Insertar logo (`Logo_mini_MarcaAgua.png`) en sidebar, topbar y `LoginPage`   | ✅     |
+| 89 | Ajustar favicon SVG personalizado                                            | ✅     |
+| 90 | Ajustar posicionamiento del logo en vista `viewer` (sin sidebar completo)    | ✅     |
+
+### Sprint 21 — Hardening middleware
+
+| #  | Tarea                                                                        | Estado |
+| -- | ---------------------------------------------------------------------------- | ------ |
+| 91 | `auth.js`: validar formato `Bearer <token>` antes de llamar a `jwt.verify`; cambiar a `try/catch` síncrono | ✅ |
+
+</details>
 
 <details>
 <summary><strong>Modelo de datos (5 entidades)</strong></summary>
