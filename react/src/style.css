@@ -267,6 +267,12 @@ body {
   margin-left: auto;
 }
 
+.topbar__viewer-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .topbar__logo {
   width: 38px;
   height: 38px;
@@ -1327,11 +1333,12 @@ body {
 
   /* --- Topbar: hamburguesa + título + acción --- */
   .topbar {
-    padding: 0 16px;
+    padding: 8px 16px;
     gap: 12px;
     height: auto;
     min-height: var(--topbar-height);
     flex-wrap: nowrap;
+    align-items: center;
   }
 
   /* Botón hamburguesa */
@@ -1373,12 +1380,41 @@ body {
   }
 
   .topbar__date {
-    display: none;
+    font-size: 0.75rem;
+    margin-top: 1px;
   }
 
   .topbar__actions .btn {
     font-size: 0.82rem;
     padding: 7px 12px;
+    white-space: nowrap;
+  }
+
+  /* Viewer controls en mobile: nombre arriba, botones en fila abajo */
+  .topbar__viewer-controls {
+    flex-shrink: 0;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+    margin-left: 0;
+  }
+
+  .topbar__viewer-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--color-text);
+  }
+
+  .topbar__viewer-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .topbar__viewer-controls .btn--sm {
+    padding: 4px 10px;
+    font-size: 0.76rem;
     white-space: nowrap;
   }
 

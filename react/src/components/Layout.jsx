@@ -77,10 +77,12 @@ function Layout({ title, activePage, actions, children }) {
           {isViewer && (
             <div className="topbar__viewer-controls">
               <span className="topbar__viewer-name">{user?.name ?? user?.email}</span>
-              <button className="btn--icon-only" onClick={toggleTheme} title={dark ? 'Modo claro' : 'Modo oscuro'}>
-                {dark ? '☀️' : '🌙'}
-              </button>
-              <button className="btn btn--secondary btn--sm" onClick={logout}>Cerrar sesión</button>
+              <div className="topbar__viewer-actions">
+                <button className="btn--icon-only" onClick={toggleTheme} title={dark ? 'Modo claro' : 'Modo oscuro'}>
+                  {dark ? '☀️' : '🌙'}
+                </button>
+                <button className="btn btn--secondary btn--sm" onClick={logout}>Cerrar sesión</button>
+              </div>
             </div>
           )}
         </header>
